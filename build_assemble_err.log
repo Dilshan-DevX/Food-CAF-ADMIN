@@ -1,0 +1,125 @@
+﻿> Task :app:preBuild UP-TO-DATE
+> Task :app:preDebugBuild UP-TO-DATE
+> Task :app:mergeDebugNativeDebugMetadata NO-SOURCE
+> Task :app:javaPreCompileDebug UP-TO-DATE
+> Task :app:checkDebugAarMetadata UP-TO-DATE
+> Task :app:generateDebugResValues
+> Task :app:processDebugGoogleServices
+> Task :app:mapDebugSourceSetPaths
+> Task :app:generateDebugResources
+> Task :app:packageDebugResources
+> Task :app:createDebugCompatibleScreenManifests
+> Task :app:extractDeepLinksDebug
+> Task :app:parseDebugLocalResources
+> Task :app:processDebugMainManifest
+> Task :app:processDebugManifest
+> Task :app:mergeDebugShaders
+> Task :app:compileDebugShaders NO-SOURCE
+> Task :app:generateDebugAssets UP-TO-DATE
+> Task :app:mergeDebugResources
+> Task :app:mergeDebugAssets
+> Task :app:compressDebugAssets
+> Task :app:desugarDebugFileDependencies
+> Task :app:mergeDebugJniLibFolders
+> Task :app:checkDebugDuplicateClasses
+> Task :app:mergeDebugNativeLibs
+> Task :app:mergeLibDexDebug
+
+> Task :app:stripDebugDebugSymbols
+Unable to strip the following libraries, packaging them as they are: libdatastore_shared_counter.so. Run with --info option to learn more.
+
+> Task :app:validateSigningDebug
+> Task :app:writeDebugAppMetadata
+> Task :app:writeDebugSigningConfigVersions
+> Task :app:processDebugManifestForPackage
+> Task :app:processDebugResources FAILED
+> Task :app:mergeExtDexDebug
+
+[Incubating] Problems report is available at: file:///D:/Dev%20project/Android/AdminFoodCaF/build/reports/problems/problems-report.html
+.\gradlew.bat : 
+At line:1 char:1
++ .\gradlew.bat assembleDebug 2>&1 | Out-File -Encoding utf8 build_asse 
+...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:String) [], RemoteExcepti 
+   on
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':app:processDebugResources'.
+> A failure occurred while executing com.android.build.gradle.internal.r
+es.LinkApplicationAndroidResourcesTask$TaskAction
+   > Android resource linking failed
+     ERROR: D:\Dev project\Android\AdminFoodCaF\app\src\main\res\layout\
+activity_main.xml:22: AAPT: error: resource 
+drawable/home_top_tool_bar_bg (aka 
+com.codex.adminfoodcaf:drawable/home_top_tool_bar_bg) not found.
+         
+     ERROR: D:\Dev project\Android\AdminFoodCaF\app\src\main\res\layout\
+activity_main.xml:42: AAPT: error: resource drawable/search_bg (aka 
+com.codex.adminfoodcaf:drawable/search_bg) not found.
+         
+     ERROR: D:\Dev project\Android\AdminFoodCaF\app\src\main\res\layout\
+activity_main.xml:42: AAPT: error: resource string/search_hint_text 
+(aka com.codex.adminfoodcaf:string/search_hint_text) not found.
+         
+     ERROR: D:\Dev project\Android\AdminFoodCaF\app\src\main\res\layout\
+activity_main.xml:42: AAPT: error: resource drawable/search_24px (aka 
+com.codex.adminfoodcaf:drawable/search_24px) not found.
+         
+     ERROR: D:\Dev project\Android\AdminFoodCaF\app\src\main\res\layout\
+activity_main.xml:91: AAPT: error: resource menu/bottom_nav_menu (aka 
+com.codex.adminfoodcaf:menu/bottom_nav_menu) not found.
+         
+     ERROR: D:\Dev project\Android\AdminFoodCaF\app\src\main\res\layout\
+activity_main.xml:104: AAPT: error: resource menu/side_nav_menu (aka 
+com.codex.adminfoodcaf:menu/side_nav_menu) not found.
+         
+     ERROR: D:\Dev project\Android\AdminFoodCaF\app\src\main\res\layout\
+activity_main.xml:104: AAPT: error: resource drawable/nav_custom_icon 
+(aka com.codex.adminfoodcaf:drawable/nav_custom_icon) not found.
+         
+     ERROR: D:\Dev project\Android\AdminFoodCaF\app\src\main\res\layout\
+activity_main.xml:104: AAPT: error: resource layout/side_nav_header 
+(aka com.codex.adminfoodcaf:layout/side_nav_header) not found.
+         
+     ERROR: D:\Dev project\Android\AdminFoodCaF\app\src\main\res\layout\
+activity_spalsh.xml:9: AAPT: error: resource color/md_theme_primary 
+(aka com.codex.adminfoodcaf:color/md_theme_primary) not found.
+         
+     ERROR: D:\Dev project\Android\AdminFoodCaF\app\src\main\res\layout\
+activity_spalsh.xml:32: AAPT: error: resource 
+color/md_theme_scrim_mediumContrast (aka 
+com.codex.adminfoodcaf:color/md_theme_scrim_mediumContrast) not found.
+         
+     ERROR: D:\Dev project\Android\AdminFoodCaF\app\src\main\res\layout\
+activity_spalsh.xml:32: AAPT: error: resource string/Splash_text_1 (aka 
+com.codex.adminfoodcaf:string/Splash_text_1) not found.
+         
+     ERROR: D:\Dev project\Android\AdminFoodCaF\app\src\main\res\layout\
+activity_spalsh.xml:53: AAPT: error: resource 
+color/md_theme_scrim_mediumContrast (aka 
+com.codex.adminfoodcaf:color/md_theme_scrim_mediumContrast) not found.
+         
+     ERROR: D:\Dev project\Android\AdminFoodCaF\app\src\main\res\layout\
+activity_spalsh.xml:53: AAPT: error: resource 
+string/splash_code_x_pvt_ltd (aka 
+com.codex.adminfoodcaf:string/splash_code_x_pvt_ltd) not found.
+         
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.13/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+28 actionable tasks: 26 executed, 2 up-to-date
+
+BUILD FAILED in 46s

@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "642494013466",
+    "project_id": "foodcaf-82dbc",
+    "storage_bucket": "foodcaf-82dbc.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:642494013466:android:05b71a45ea78e1d9dd31a3",
+        "android_client_info": {
+          "package_name": "com.codex.adminfoodcaf"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBS5F6d9s6dOTa-4c4sieDuObkgMCjVVNg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:642494013466:android:a6f4540932fbb24ddd31a3",
+        "android_client_info": {
+          "package_name": "com.codex.foodcaf"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBS5F6d9s6dOTa-4c4sieDuObkgMCjVVNg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

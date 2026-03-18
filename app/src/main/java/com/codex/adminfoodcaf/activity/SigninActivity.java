@@ -1,0 +1,79 @@
+package com.codex.adminfoodcaf.activity;
+
+import android.os.Bundle;
+
+import android.content.Intent;
+import android.util.Patterns;
+import android.widget.Toast;
+
+import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.codex.adminfoodcaf.databinding.ActivitySigninBinding;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
+public class SigninActivity extends AppCompatActivity {
+
+    private ActivitySigninBinding binding;
+    private FirebaseAuth firebaseAuth;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        
+        binding = ActivitySigninBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+        
+        firebaseAuth = FirebaseAuth.getInstance();
+
+        binding.signinBtnSignin.setOnClickListener(view -> {
+            String email = binding.signinInputEmail.getText().toString().trim();
+            String password = binding.signinInputPassword.getText().toString().trim();
+
+            if (email.isEmpty()) {
+                binding.signinInputEmail.setError("Email is required");
+                binding.signinInputEmail.requestFocus();
+                return;
+            }
+
+            if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                binding.signinInputEmail.setError("Enter Valid Email");
+                binding.signinInputEmail.requestFocus();
+                return;
+            }
+
+            if (password.isEmpty()) {
+                binding.signinInputPassword.setError("Password is required");
+                binding.signinInputPassword.requestFocus();
+                return;
+            }
+
+            firebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    if (task.isSuccessful()) {
+                        updateUI(firebaseAuth.getCurrentUser());
+                    } else {
+                        Toast.makeText(SigninActivity.this, "Authentication Failed", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+        });
+    }
+
+    private void updateUI(FirebaseUser currentUser) {
+        if (currentUser != null) {
+            Intent intent = new Intent(SigninActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        } else {
+            Toast.makeText(this, "Authentication Failed", Toast.LENGTH_SHORT).show();
+        }
+    }
+}

@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">FCAdmin</string>
+    <string name="search_hint_text">Search for food...</string>
+    <string name="Splash_text_1">Admin Food CaF</string>
+    <string name="splash_code_x_pvt_ltd">Powered by Code X Pvt Ltd</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
