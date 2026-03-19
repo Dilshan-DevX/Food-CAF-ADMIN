@@ -17,6 +17,7 @@ public class User {
     private String address;
     private String mobileNum;
     private String profilePicUrl;
+    private boolean status;
 
 
 }

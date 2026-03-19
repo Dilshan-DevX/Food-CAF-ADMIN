@@ -25,12 +25,18 @@ public class SigninActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        firebaseAuth = FirebaseAuth.getInstance();
+        if (firebaseAuth.getCurrentUser() != null) {
+            startActivity(new Intent(SigninActivity.this, MainActivity.class));
+            finish();
+            return;
+        }
+
         EdgeToEdge.enable(this);
         
         binding = ActivitySigninBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        
-        firebaseAuth = FirebaseAuth.getInstance();
 
         binding.signinBtnSignin.setOnClickListener(view -> {
             String email = binding.signinInputEmail.getText().toString().trim();
