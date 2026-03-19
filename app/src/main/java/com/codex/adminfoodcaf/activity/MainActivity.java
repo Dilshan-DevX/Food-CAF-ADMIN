@@ -66,6 +66,15 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (navigationView != null) {
+            FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+            if (currentUser != null) {
+                navigationView.getMenu().findItem(R.id.nav_Login).setVisible(false);
+                navigationView.getMenu().findItem(R.id.nav_Logout).setVisible(true);
+            } else {
+                navigationView.getMenu().findItem(R.id.nav_Login).setVisible(true);
+                navigationView.getMenu().findItem(R.id.nav_Logout).setVisible(false);
+            }
+            
             navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
                 @Override
                 public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -93,6 +102,26 @@ public class MainActivity extends AppCompatActivity {
         }
 
         loadUserProfileInfo();
+
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            int itemId = item.getItemId();
+            if (itemId == R.id.nav_home) {
+                // Clear back stack to remove SingleProductFragment or others
+                getSupportFragmentManager().popBackStack(null, androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragmentContainer, new com.codex.adminfoodcaf.fragment.HomeFragment())
+                        .commit();
+                return true;
+            } else if (itemId == R.id.nav_users) {
+                getSupportFragmentManager().popBackStack(null, androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragmentContainer, new com.codex.adminfoodcaf.fragment.UserManagementFragment())
+                        .commit();
+                return true;
+            }
+            // Future tabs (Orders, Profile) can be added here
+            return false;
+        });
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
