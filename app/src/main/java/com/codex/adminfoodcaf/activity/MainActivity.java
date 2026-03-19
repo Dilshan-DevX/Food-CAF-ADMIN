@@ -118,8 +118,14 @@ public class MainActivity extends AppCompatActivity {
                         .replace(R.id.fragmentContainer, new com.codex.adminfoodcaf.fragment.UserManagementFragment())
                         .commit();
                 return true;
+            } else if (itemId == R.id.nav_profile) {
+                getSupportFragmentManager().popBackStack(null, androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragmentContainer, new com.codex.adminfoodcaf.fragment.AnalyticsFragment())
+                        .commit();
+                return true;
             }
-            // Future tabs (Orders, Profile) can be added here
+            // Future tabs (Orders) can be added here
             return false;
         });
 
