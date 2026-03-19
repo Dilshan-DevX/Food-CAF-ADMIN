@@ -53,110 +53,86 @@ public class HomeFragment extends Fragment {
     private void loadStats() {
 
         // ── 1. ORDERS collection ──────────────────────────────────────────────
-        db.collection("orders").get()
-                .addOnSuccessListener(orderSnap -> {
-                    if (binding == null || !isAdded()) return;
+        db.collection("orders").addSnapshotListener((orderSnap, e) -> {
+            if (e != null || binding == null || !isAdded() || orderSnap == null) return;
 
-                    int totalOrders = orderSnap.size();
-                    binding.orderCount.setText(String.valueOf(totalOrders));
+            int totalOrders = orderSnap.size();
+            binding.orderCount.setText(String.valueOf(totalOrders));
 
-                    int salesCount    = 0;   // status == true  (Paid / Delivered)
-                    int pendingCount  = 0;   // status == false (Pending / others)
-                    double revenue    = 0.0; // status true orders wala total
+            int salesCount    = 0;   // status == true  (Paid / Delivered)
+            int pendingCount  = 0;   // status == false (Pending / others)
+            double revenue    = 0.0; // status true orders wala total
 
-                    List<Order> orderList = orderSnap.toObjects(Order.class);
+            List<Order> orderList = orderSnap.toObjects(Order.class);
 
-                    for (Order order : orderList) {
-                        // ✅ "status" field eke "true" / "Paid" / "Delivered" — boolean-like string check
-                        boolean isPaid = "true".equalsIgnoreCase(order.getStatus())
-                                || "Paid".equalsIgnoreCase(order.getStatus())
-                                || "Delivered".equalsIgnoreCase(order.getStatus());
+            for (Order order : orderList) {
+                // ✅ "status" field eke "true" / "Paid" / "Delivered" — boolean-like string check
+                boolean isPaid = "true".equalsIgnoreCase(order.getStatus())
+                        || "Paid".equalsIgnoreCase(order.getStatus())
+                        || "Delivered".equalsIgnoreCase(order.getStatus());
 
-                        if (isPaid) {
-                            salesCount++;
+                if (isPaid) {
+                    salesCount++;
 
-                            // ✅ totalRevenue — paid orders wala orderItems totalPrice ekathu karanawa
-                            if (order.getOrderItems() != null) {
-                                for (Order.OrderItem item : order.getOrderItems()) {
-                                    revenue += item.getTotalPrice();
-                                }
-                            }
-                        } else {
-                            pendingCount++;
+                    // ✅ totalRevenue — paid orders wala orderItems totalPrice ekathu karanawa
+                    if (order.getOrderItems() != null) {
+                        for (Order.OrderItem item : order.getOrderItems()) {
+                            revenue += item.getTotalPrice();
                         }
                     }
+                } else {
+                    pendingCount++;
+                }
+            }
 
-                    binding.salesCount.setText(String.valueOf(salesCount));
-                    binding.pendingPayment.setText(String.valueOf(pendingCount));
-                    binding.totalRevenue.setText(String.format("LKR %.0f", revenue));
-                })
-                .addOnFailureListener(e -> {
-                    if (binding == null || !isAdded()) return;
-                    Toast.makeText(getContext(), "Failed to load orders", Toast.LENGTH_SHORT).show();
-                });
+            binding.salesCount.setText(String.valueOf(salesCount));
+            binding.pendingPayment.setText(String.valueOf(pendingCount));
+            binding.totalRevenue.setText(String.format("LKR %.0f", revenue));
+        });
 
         // ── 2. PRODUCTS collection ────────────────────────────────────────────
-        db.collection("products").get()
-                .addOnSuccessListener(productSnap -> {
-                    if (binding == null || !isAdded()) return;
-                    binding.productCount.setText(String.valueOf(productSnap.size()));
-                })
-                .addOnFailureListener(e -> {
-                    if (binding == null || !isAdded()) return;
-                    Toast.makeText(getContext(), "Failed to load products count", Toast.LENGTH_SHORT).show();
-                });
+        db.collection("products").addSnapshotListener((productSnap, e) -> {
+            if (e != null || binding == null || !isAdded() || productSnap == null) return;
+            binding.productCount.setText(String.valueOf(productSnap.size()));
+        });
 
         // ── 3. USERS collection ───────────────────────────────────────────────
-        db.collection("users").get()
-                .addOnSuccessListener(userSnap -> {
-                    if (binding == null || !isAdded()) return;
-                    binding.userCount.setText(String.valueOf(userSnap.size()));
-                })
-                .addOnFailureListener(e -> {
-                    if (binding == null || !isAdded()) return;
-                    Toast.makeText(getContext(), "Failed to load user count", Toast.LENGTH_SHORT).show();
-                });
+        db.collection("users").addSnapshotListener((userSnap, e) -> {
+            if (e != null || binding == null || !isAdded() || userSnap == null) return;
+            binding.userCount.setText(String.valueOf(userSnap.size()));
+        });
     }
 
     // ✅ rvAdminList — products load
     private void loadProducts() {
-        db.collection("products").get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    if (binding == null || !isAdded()) return;
+        binding.rvAdminList.setLayoutManager(new LinearLayoutManager(getContext()));
+        db.collection("products").addSnapshotListener((queryDocumentSnapshots, e) -> {
+            if (e != null || binding == null || !isAdded() || queryDocumentSnapshots == null) return;
 
-                    if (!queryDocumentSnapshots.isEmpty()) {
-                        List<Product> productList = new java.util.ArrayList<>();
-                        for (com.google.firebase.firestore.QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                            Product p = doc.toObject(Product.class);
-                            p.setProductId(doc.getId());
-                            productList.add(p);
-                        }
+            List<Product> productList = new java.util.ArrayList<>();
+            for (com.google.firebase.firestore.QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                Product p = doc.toObject(Product.class);
+                p.setProductId(doc.getId());
+                productList.add(p);
+            }
 
-                        binding.rvAdminList.setLayoutManager(new LinearLayoutManager(getContext()));
+            AdminProductAdapter adapter = new AdminProductAdapter(productList, product -> {
+                if (binding == null || !isAdded()) return;
 
-                        AdminProductAdapter adapter = new AdminProductAdapter(productList, product -> {
-                            if (binding == null || !isAdded()) return;
+                Bundle bundle = new Bundle();
+                bundle.putString("productId", product.getProductId());
 
-                            Bundle bundle = new Bundle();
-                            bundle.putString("productId", product.getProductId());
+                SingleProductFragment singleProductFragment = new SingleProductFragment();
+                singleProductFragment.setArguments(bundle);
 
-                            SingleProductFragment singleProductFragment = new SingleProductFragment();
-                            singleProductFragment.setArguments(bundle);
+                requireActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragmentContainer, singleProductFragment)
+                        .addToBackStack(null)
+                        .commit();
+            });
 
-                            requireActivity().getSupportFragmentManager().beginTransaction()
-                                    .replace(R.id.fragmentContainer, singleProductFragment)
-                                    .addToBackStack(null)
-                                    .commit();
-                        });
-
-                        binding.rvAdminList.setAdapter(adapter);
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    if (binding == null || !isAdded()) return;
-                    Toast.makeText(getContext(), "Failed to load products: " + e.getMessage(),
-                            Toast.LENGTH_SHORT).show();
-                });
+            binding.rvAdminList.setAdapter(adapter);
+        });
     }
 
     @Override
