@@ -46,5 +46,21 @@
     <color name="md_theme_itemCard_bg">#551E1E21</color>
 
     <color name="md_theme_itemCart_bg">#6A4F4F50</color>
+
+    ////////////////////////////////////////////////////////
+
+    <color name="md_theme_home_card1">#6367FF</color>
+
+    <color name="md_theme_home_card2">#FF5A5A</color>
+
+    <color name="md_theme_home_card3">#C7EABB</color>
+
+    <color name="md_theme_home_card4">#8494FF</color>
+
+    //////////////////////////////////////////////////////
+
+    <color name="md_theme_item_card">#FFFFFF</color>
+
+    <color name="md_theme_bg_main">#F0F4F8</color>
     
 </resources>

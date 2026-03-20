@@ -11,9 +11,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.codex.adminfoodcaf.databinding.ActivitySigninBinding;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -60,16 +57,26 @@ public class SigninActivity extends AppCompatActivity {
                 return;
             }
 
-            firebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
-                    if (task.isSuccessful()) {
-                        updateUI(firebaseAuth.getCurrentUser());
-                    } else {
-                        Toast.makeText(SigninActivity.this, "Authentication Failed", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });
+            // ── Admin-only check: Firebase sign in karanawa, passe email verify ──
+            firebaseAuth.signInWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            FirebaseUser user = firebaseAuth.getCurrentUser();
+                            if (user != null && "admin@gmail.com".equalsIgnoreCase(user.getEmail())) {
+                                updateUI(user);
+                            } else {
+                               
+                                firebaseAuth.signOut();
+                                Toast.makeText(SigninActivity.this,
+                                        "Access Denied. Admin accounts only.",
+                                        Toast.LENGTH_LONG).show();
+                            }
+                        } else {
+                            Toast.makeText(SigninActivity.this,
+                                    "Authentication Failed. Check your credentials.",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    });
         });
     }
 

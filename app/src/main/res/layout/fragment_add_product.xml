@@ -45,8 +45,9 @@
                         android:id="@+id/imgProduct"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:scaleType="centerCrop"
-                        android:src="@android:drawable/ic_menu_gallery" />
+                        android:scaleType="fitCenter"
+                        android:padding="48dp"
+                        android:src="@drawable/addproduct" />
 
                 </androidx.cardview.widget.CardView>
 
@@ -66,8 +67,9 @@
                         android:id="@+id/imgProduct2"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:scaleType="centerCrop"
-                        android:src="@android:drawable/ic_menu_gallery" />
+                        android:scaleType="fitCenter"
+                        android:padding="48dp"
+                        android:src="@drawable/addproduct" />
 
                 </androidx.cardview.widget.CardView>
 
@@ -369,7 +371,7 @@
         android:layout_height="56dp"
         android:layout_marginHorizontal="16dp"
         android:layout_marginVertical="12dp"
-        android:text="UPDATE PRODUCT"
+        android:text="ADD PRODUCT"
         android:textColor="#FFFFFF"
         android:textSize="15sp"
         android:textStyle="bold"

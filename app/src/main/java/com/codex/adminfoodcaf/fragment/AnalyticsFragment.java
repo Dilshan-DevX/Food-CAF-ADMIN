@@ -12,6 +12,7 @@ import android.webkit.WebViewClient;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -54,6 +55,26 @@ public class AnalyticsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        // ── Back press → Home ─────────────────────────────────────────────────
+        requireActivity().getOnBackPressedDispatcher().addCallback(
+                getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+                    @Override
+                    public void handleOnBackPressed() {
+                        requireActivity().getSupportFragmentManager()
+                                .popBackStack(null,
+                                        androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                        requireActivity().getSupportFragmentManager()
+                                .beginTransaction()
+                                .replace(R.id.fragmentContainer,
+                                        new com.codex.adminfoodcaf.fragment.HomeFragment())
+                                .commit();
+                        // Bottom nav home item select කරන්නා
+                        com.google.android.material.bottomnavigation.BottomNavigationView bnv =
+                                requireActivity().findViewById(R.id.bottomNavView);
+                        if (bnv != null) bnv.setSelectedItemId(R.id.nav_home);
+                    }
+                });
 
         tvTotalRevenue    = view.findViewById(R.id.tvTotalRevenue);
         tvTotalOrders     = view.findViewById(R.id.tvTotalOrders);
