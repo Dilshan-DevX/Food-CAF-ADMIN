@@ -26,7 +26,8 @@ public class HomeFragment extends Fragment {
     private FragmentHomeBinding binding;
     private FirebaseFirestore db;
 
-    public HomeFragment() {}
+    public HomeFragment() {
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -36,7 +37,7 @@ public class HomeFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+            Bundle savedInstanceState) {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
@@ -54,19 +55,21 @@ public class HomeFragment extends Fragment {
 
         // ── 1. ORDERS collection ──────────────────────────────────────────────
         db.collection("orders").addSnapshotListener((orderSnap, e) -> {
-            if (e != null || binding == null || !isAdded() || orderSnap == null) return;
+            if (e != null || binding == null || !isAdded() || orderSnap == null)
+                return;
 
             int totalOrders = orderSnap.size();
             binding.orderCount.setText(String.valueOf(totalOrders));
 
-            int salesCount    = 0;   // status == true  (Paid / Delivered)
-            int pendingCount  = 0;   // status == false (Pending / others)
-            double revenue    = 0.0; // status true orders wala total
+            int salesCount = 0; // status == true (Paid / Delivered)
+            int pendingCount = 0; // status == false (Pending / others)
+            double revenue = 0.0; // status true orders wala total
 
             List<Order> orderList = orderSnap.toObjects(Order.class);
 
             for (Order order : orderList) {
-                // ✅ "status" field eke "true" / "Paid" / "Delivered" — boolean-like string check
+                // ✅ "status" field eke "true" / "Paid" / "Delivered" — boolean-like string
+                // check
                 boolean isPaid = "true".equalsIgnoreCase(order.getStatus())
                         || "Paid".equalsIgnoreCase(order.getStatus())
                         || "Delivered".equalsIgnoreCase(order.getStatus());
@@ -92,13 +95,15 @@ public class HomeFragment extends Fragment {
 
         // ── 2. PRODUCTS collection ────────────────────────────────────────────
         db.collection("products").addSnapshotListener((productSnap, e) -> {
-            if (e != null || binding == null || !isAdded() || productSnap == null) return;
+            if (e != null || binding == null || !isAdded() || productSnap == null)
+                return;
             binding.productCount.setText(String.valueOf(productSnap.size()));
         });
 
         // ── 3. USERS collection ───────────────────────────────────────────────
         db.collection("users").addSnapshotListener((userSnap, e) -> {
-            if (e != null || binding == null || !isAdded() || userSnap == null) return;
+            if (e != null || binding == null || !isAdded() || userSnap == null)
+                return;
             binding.userCount.setText(String.valueOf(userSnap.size()));
         });
     }
@@ -107,7 +112,8 @@ public class HomeFragment extends Fragment {
     private void loadProducts() {
         binding.rvAdminList.setLayoutManager(new LinearLayoutManager(getContext()));
         db.collection("products").addSnapshotListener((queryDocumentSnapshots, e) -> {
-            if (e != null || binding == null || !isAdded() || queryDocumentSnapshots == null) return;
+            if (e != null || binding == null || !isAdded() || queryDocumentSnapshots == null)
+                return;
 
             List<Product> productList = new java.util.ArrayList<>();
             for (com.google.firebase.firestore.QueryDocumentSnapshot doc : queryDocumentSnapshots) {
@@ -117,7 +123,8 @@ public class HomeFragment extends Fragment {
             }
 
             AdminProductAdapter adapter = new AdminProductAdapter(productList, product -> {
-                if (binding == null || !isAdded()) return;
+                if (binding == null || !isAdded())
+                    return;
 
                 Bundle bundle = new Bundle();
                 bundle.putString("productId", product.getProductId());
