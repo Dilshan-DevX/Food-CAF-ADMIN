@@ -78,18 +78,32 @@ public class MainActivity extends AppCompatActivity {
             navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
                 @Override
                 public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                    if (item.getItemId() == R.id.nav_Logout) {
+                    int id = item.getItemId();
+
+                    if (id == R.id.nav_Logout) {
                         FirebaseAuth.getInstance().signOut();
                         Intent intent = new Intent(MainActivity.this, SigninActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(intent);
                         finish();
                         return true;
+                    } else if (id == R.id.nav_add) {
+                        getSupportFragmentManager().popBackStack(null, androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                        getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.fragmentContainer, new com.codex.adminfoodcaf.fragment.BannerManagementFragment())
+                                .addToBackStack(null)
+                                .commit();
+                    } else if (id == R.id.drawer_home) {
+                        getSupportFragmentManager().popBackStack(null, androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                        getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.fragmentContainer, new com.codex.adminfoodcaf.fragment.HomeFragment())
+                                .commit();
                     }
+
                     if (drawerLayout != null) {
                         drawerLayout.closeDrawer(GravityCompat.START);
                     }
-                    return false;
+                    return true;
                 }
             });
         }

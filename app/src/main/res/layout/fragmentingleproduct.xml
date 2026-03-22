@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#F7F8FA">
+    android:background="#0F1218">
 
 
 
@@ -37,6 +37,7 @@
                     android:layout_marginEnd="6dp"
                     app:cardCornerRadius="14dp"
                     app:cardElevation="4dp"
+                    app:cardBackgroundColor="#1E2433"
                     android:layout_marginBottom="5dp"
                     android:layout_marginTop="5dp"
                     android:layout_marginStart="5dp">
@@ -58,6 +59,7 @@
                     android:layout_marginStart="6dp"
                     app:cardCornerRadius="14dp"
                     app:cardElevation="4dp"
+                    app:cardBackgroundColor="#1E2433"
                     android:layout_marginBottom="5dp"
                     android:layout_marginTop="5dp"
                     android:layout_marginEnd="5dp">
@@ -79,7 +81,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="12dp"
-                app:cardBackgroundColor="#FFFFFF"
+                app:cardBackgroundColor="#1E2433"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="3dp"
                 app:strokeWidth="0dp">
@@ -105,7 +107,8 @@
                             android:hint="Product Name"
                             android:textSize="18sp"
                             android:textStyle="bold"
-                            android:textColor="#222222"
+                            android:textColorHint="@color/white"
+                            android:textColor="@color/white"
                             android:background="@null"
                             android:padding="0dp"
                             android:inputType="text" />
@@ -167,7 +170,8 @@
                                 android:layout_height="wrap_content"
                                 android:hint="0.00"
                                 android:textSize="15sp"
-                                android:textColor="#222222"
+                                android:textColor="@color/white"
+                                android:textColorHint="@color/white"
                                 android:inputType="numberDecimal"
                                 android:background="@null"
                                 android:padding="0dp" />
@@ -194,7 +198,8 @@
                                 android:layout_height="wrap_content"
                                 android:hint="4.5"
                                 android:textSize="15sp"
-                                android:textColor="#222222"
+                                android:textColor="@color/white"
+                                android:textColorHint="@color/white"
                                 android:inputType="numberDecimal"
                                 android:background="@null"
                                 android:padding="0dp" />
@@ -221,7 +226,8 @@
                                 android:layout_height="wrap_content"
                                 android:hint="30 min"
                                 android:textSize="15sp"
-                                android:textColor="#222222"
+                                android:textColor="@color/white"
+                                android:textColorHint="@color/white"
                                 android:inputType="text"
                                 android:background="@null"
                                 android:padding="0dp" />
@@ -237,7 +243,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="12dp"
-                app:cardBackgroundColor="#FFFFFF"
+                app:cardBackgroundColor="#1E2433"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="3dp"
                 app:strokeWidth="0dp">
@@ -262,7 +268,8 @@
                         android:layout_height="wrap_content"
                         android:hint="Enter food description..."
                         android:textSize="14sp"
-                        android:textColor="#333333"
+                        android:textColor="@color/white"
+                        android:textColorHint="@color/white"
                         android:inputType="textMultiLine"
                         android:minLines="3"
                         android:gravity="top"
@@ -290,7 +297,8 @@
                         android:layout_height="wrap_content"
                         android:hint="Enter ingredients..."
                         android:textSize="14sp"
-                        android:textColor="#333333"
+                        android:textColor="@color/white"
+                        android:textColorHint="@color/white"
                         android:inputType="textMultiLine"
                         android:minLines="2"
                         android:gravity="top"
@@ -308,7 +316,7 @@
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="12dp"
                 android:layout_marginBottom="10dp"
-                app:cardBackgroundColor="#FFFFFF"
+                app:cardBackgroundColor="#1E2433"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="3dp"
                 app:strokeWidth="0dp">
@@ -339,7 +347,7 @@
                         app:boxCornerRadiusTopEnd="10dp"
                         app:boxCornerRadiusTopStart="10dp"
                         app:boxStrokeColor="#E0E0E0"
-                        app:hintTextColor="#999999">
+                        app:hintTextColor="@color/white">
 
                         <AutoCompleteTextView
                             android:id="@+id/dropdownCategory"
@@ -347,7 +355,7 @@
                             android:layout_height="wrap_content"
                             android:hint="Select Category"
                             android:textSize="14sp"
-                            android:textColor="#333333"
+                            android:textColor="@color/white"
                             android:paddingHorizontal="12dp"
                             android:paddingVertical="14dp"
                             android:inputType="none"

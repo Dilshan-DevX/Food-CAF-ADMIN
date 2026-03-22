@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="24dp"
-    android:background="@android:color/white">
+    android:background="@drawable/user_bg">
 
     <!-- Profile Image + Name header -->
     <LinearLayout
@@ -35,7 +35,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="User Name"
-            android:textColor="#1A1F2E"
+            android:textColor="@color/white"
             android:textSize="18sp"
             android:textStyle="bold"
             android:layout_marginTop="12dp" />
@@ -60,7 +60,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="#F8F9FB"
+        android:background="@drawable/user_bg1"
         android:padding="14dp">
 
         <!-- Email -->
@@ -84,7 +84,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="-"
-                android:textColor="#333333"
+                android:textColor="@color/white"
                 android:textSize="13sp" />
 
         </LinearLayout>
@@ -110,7 +110,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="-"
-                android:textColor="#333333"
+                android:textColor="@color/white"
                 android:textSize="13sp" />
 
         </LinearLayout>
@@ -136,7 +136,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="-"
-                android:textColor="#333333"
+                android:textColor="@color/white"
                 android:textSize="13sp" />
 
         </LinearLayout>
@@ -179,7 +179,7 @@
         android:text="Close"
         android:textColor="#FFFFFF"
         android:textStyle="bold"
-        app:backgroundTint="#1A1F2E"
+        app:backgroundTint="@color/md_theme_home_card2"
         app:cornerRadius="14dp"
         app:elevation="0dp" />
 
