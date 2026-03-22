@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
-    android:background="#F0F4F8">
+    android:background="#0F1218">
 
     <!-- Header -->
     <LinearLayout
@@ -22,7 +22,7 @@
             android:layout_weight="1"
             android:letterSpacing="0.02"
             android:text="User Management"
-            android:textColor="@color/md_theme_Text2"
+            android:textColor="@color/white"
             android:textSize="20sp"
             android:textStyle="bold" />
 
@@ -44,7 +44,7 @@
         android:paddingHorizontal="16dp"
         android:paddingTop="8dp"
         android:paddingBottom="8dp"
-        android:background="#F0F4F8">
+        android:background="#0F1218">
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
@@ -80,9 +80,9 @@
         android:layout_height="match_parent"
         android:clipToPadding="false"
         android:paddingHorizontal="16dp"
-        android:paddingBottom="10dp"
         android:paddingTop="4dp"
+        android:paddingBottom="10dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:listitem="@layout/item_user"/>
+        tools:listitem="@layout/item_user" />
 
 </LinearLayout>

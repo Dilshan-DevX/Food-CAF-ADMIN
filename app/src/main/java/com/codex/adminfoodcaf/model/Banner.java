@@ -11,9 +11,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Banner {
 
-        private  String title;
-        private  String offer;
-        private  String Date;
-        private  String imageUrl;
+        private  String banner_id;
+        private  String banner_title;
+        private  String banner_body;
+        private  String banner_date;
+        private  String banner_url;
 
 }
