@@ -98,6 +98,12 @@ public class MainActivity extends AppCompatActivity {
                         getSupportFragmentManager().beginTransaction()
                                 .replace(R.id.fragmentContainer, new com.codex.adminfoodcaf.fragment.HomeFragment())
                                 .commit();
+                    } else if (id == R.id.Messages) {
+                        getSupportFragmentManager().popBackStack(null, androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                        getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.fragmentContainer, new com.codex.adminfoodcaf.fragment.InboxFragment())
+                                .addToBackStack(null)
+                                .commit();
                     }
 
                     if (drawerLayout != null) {
