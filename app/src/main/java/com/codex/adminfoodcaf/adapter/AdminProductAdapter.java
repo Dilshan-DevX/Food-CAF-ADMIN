@@ -39,11 +39,7 @@ public class AdminProductAdapter extends RecyclerView.Adapter<AdminProductAdapte
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Product product = productList.get(position);
-
-        // ✅ itemName — product name
         holder.itemName.setText(product.getFoodTitle() != null ? product.getFoodTitle() : "N/A");
-
-        // ✅ tvAvailability — Available / Not Available + color
         if (product.isAvailability()) {
             holder.tvAvailability.setText("Available");
             holder.tvAvailability.setTextColor(Color.parseColor("#2EBA63"));
@@ -52,16 +48,10 @@ public class AdminProductAdapter extends RecyclerView.Adapter<AdminProductAdapte
             holder.tvAvailability.setTextColor(Color.parseColor("#F44336"));
         }
 
-        // ✅ Rating — foodRating
         holder.Rating.setText(product.getFoodRating() != null ? product.getFoodRating() : "-");
-
-        // ✅ tvTime — foodTime
         holder.tvTime.setText(product.getFoodTime() != null ? product.getFoodTime() : "-");
-
-        // ✅ tvTotalPrice — productPrice
         holder.tvTotalPrice.setText(String.format("LKR %.2f", product.getProductPrice()));
 
-        // ✅ imgRestaurant — productImage list eke pahala wena image (index 0)
         if (product.getProductImage() != null && !product.getProductImage().isEmpty()) {
             Glide.with(holder.imgRestaurant.getContext())
                     .load(product.getProductImage().get(0))
@@ -73,20 +63,11 @@ public class AdminProductAdapter extends RecyclerView.Adapter<AdminProductAdapte
             holder.imgRestaurant.setImageResource(android.R.drawable.ic_menu_gallery);
         }
 
-        // ✅ Click listener
+
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) listener.onProductClick(product);
 
-//            Bundle bundle = new Bundle();
-//            bundle.putString("productId", product.getProductId()); // Product ID pass kartoy
-//
-//            SingleProductFragment singleProductFragment = new SingleProductFragment();
-//            singleProductFragment.setArguments(bundle);
-//
-//            requireActivity().getSupportFragmentManager().beginTransaction()
-//                    .replace(R.id.fragmentContainer, singleProductFragment)
-//                    .addToBackStack(null)
-//                    .commit();
+
         });
     }
 

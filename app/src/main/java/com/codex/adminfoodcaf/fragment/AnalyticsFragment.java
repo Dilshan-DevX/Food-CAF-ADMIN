@@ -36,12 +36,10 @@ import java.util.Map;
 
 public class AnalyticsFragment extends Fragment {
 
-    private TextView        tvTotalRevenue, tvTotalOrders, tvCompletedOrders,
-            tvPendingOrders, tvReportDate, tvTopCount;
-    private RecyclerView    rvTopProducts, rvRecentOrders;
+    private TextView tvTotalRevenue, tvTotalOrders, tvCompletedOrders, tvPendingOrders, tvReportDate, tvTopCount;
+    private RecyclerView rvTopProducts, rvRecentOrders;
     private MaterialCardView cardManagePayment, cardAddProduct;
 
-    // ── Cached data for print ──────────────────────────────────────────────────
     private List<Order> cachedOrders = new ArrayList<>();
 
     public AnalyticsFragment() {}
@@ -56,7 +54,6 @@ public class AnalyticsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // ── Back press → Home ─────────────────────────────────────────────────
         requireActivity().getOnBackPressedDispatcher().addCallback(
                 getViewLifecycleOwner(), new OnBackPressedCallback(true) {
                     @Override
@@ -69,32 +66,31 @@ public class AnalyticsFragment extends Fragment {
                                 .replace(R.id.fragmentContainer,
                                         new com.codex.adminfoodcaf.fragment.HomeFragment())
                                 .commit();
-                        // Bottom nav home item select කරන්නා
+
                         com.google.android.material.bottomnavigation.BottomNavigationView bnv =
                                 requireActivity().findViewById(R.id.bottomNavView);
                         if (bnv != null) bnv.setSelectedItemId(R.id.nav_home);
                     }
                 });
 
-        tvTotalRevenue    = view.findViewById(R.id.tvTotalRevenue);
-        tvTotalOrders     = view.findViewById(R.id.tvTotalOrders);
+        tvTotalRevenue = view.findViewById(R.id.tvTotalRevenue);
+        tvTotalOrders = view.findViewById(R.id.tvTotalOrders);
         tvCompletedOrders = view.findViewById(R.id.tvCompletedOrders);
-        tvPendingOrders   = view.findViewById(R.id.tvPendingOrders);
-        tvReportDate      = view.findViewById(R.id.tvReportDate);
-        tvTopCount        = view.findViewById(R.id.tvTopCount);
-        rvTopProducts     = view.findViewById(R.id.rvTopProducts);
-        rvRecentOrders    = view.findViewById(R.id.rvRecentOrders);
+        tvPendingOrders = view.findViewById(R.id.tvPendingOrders);
+        tvReportDate = view.findViewById(R.id.tvReportDate);
+        tvTopCount = view.findViewById(R.id.tvTopCount);
+        rvTopProducts = view.findViewById(R.id.rvTopProducts);
+        rvRecentOrders = view.findViewById(R.id.rvRecentOrders);
         cardManagePayment = view.findViewById(R.id.cardManagePayment);
-        cardAddProduct    = view.findViewById(R.id.cardAddProduct);
+        cardAddProduct = view.findViewById(R.id.cardAddProduct);
 
         rvTopProducts.setLayoutManager(new LinearLayoutManager(getContext()));
         rvRecentOrders.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        // ── Report date ───────────────────────────────────────────────────────
+
         String today = new SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).format(new Date());
         tvReportDate.setText("Report as of " + today);
 
-        // ── Navigation shortcuts ──────────────────────────────────────────────
         cardManagePayment.setOnClickListener(v -> {
             requireActivity().getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragmentContainer, new PaymentManagementFragment())
@@ -109,14 +105,12 @@ public class AnalyticsFragment extends Fragment {
                     .commit();
         });
 
-        // ── Print button ──────────────────────────────────────────────────────
         view.findViewById(R.id.btnPrintReport).setOnClickListener(v -> printReport());
 
-        // ── Load data ─────────────────────────────────────────────────────────
         loadAnalytics();
     }
 
-    // ── Load all orders → compute analytics ───────────────────────────────────
+
     private void loadAnalytics() {
         FirebaseFirestore.getInstance()
                 .collection("orders")
@@ -131,9 +125,7 @@ public class AnalyticsFragment extends Fragment {
                     int pending   = 0;
                     double revenue = 0;
 
-                    // product name → {qty, revenue} map for top sellers
                     Map<String, int[]> productStats = new HashMap<>();
-                    // int[0] = qty, int[1] = revenue*100 (to avoid double key)
 
                     for (Order order : cachedOrders) {
                         boolean isPaid = "Paid".equalsIgnoreCase(order.getStatus())
@@ -146,7 +138,6 @@ public class AnalyticsFragment extends Fragment {
                                 for (Order.OrderItem item : order.getOrderItems()) {
                                     revenue += item.getTotalPrice();
 
-                                    // top products tracking
                                     String pName = item.getProductName() != null
                                             ? item.getProductName() : "Unknown";
                                     int[] stats = productStats.getOrDefault(pName, new int[]{0, 0});
@@ -160,13 +151,13 @@ public class AnalyticsFragment extends Fragment {
                         }
                     }
 
-                    // ── Stats cards ───────────────────────────────────────────
+
                     tvTotalOrders.setText(String.valueOf(total));
                     tvCompletedOrders.setText(String.valueOf(completed));
                     tvPendingOrders.setText(String.valueOf(pending));
                     tvTotalRevenue.setText(String.format("LKR %,.0f", revenue));
 
-                    // ── Top 5 products ────────────────────────────────────────
+
                     List<Map.Entry<String, int[]>> topList = new ArrayList<>(productStats.entrySet());
                     topList.sort((a, b) -> b.getValue()[0] - a.getValue()[0]); // sort by qty desc
                     if (topList.size() > 5) topList = topList.subList(0, 5);
@@ -174,7 +165,7 @@ public class AnalyticsFragment extends Fragment {
                     tvTopCount.setText(topList.size() + " products");
                     rvTopProducts.setAdapter(new TopProductAdapter(topList));
 
-                    // ── Recent 10 orders ──────────────────────────────────────
+
                     List<Order> recent = new ArrayList<>(cachedOrders);
                     recent.sort((a, b) -> {
                         if (a.getOrderDate() == null || b.getOrderDate() == null) return 0;
@@ -190,7 +181,7 @@ public class AnalyticsFragment extends Fragment {
                 });
     }
 
-    // ── Print Report — Android PrintManager use karala HTML report print karanawa
+
     private void printReport() {
         if (cachedOrders.isEmpty()) {
             Toast.makeText(getContext(), "No data to print", Toast.LENGTH_SHORT).show();
@@ -327,11 +318,7 @@ public class AnalyticsFragment extends Fragment {
         return sb.toString();
     }
 
-    // ══════════════════════════════════════════════════════════════════════════
-    // Inner Adapters
-    // ══════════════════════════════════════════════════════════════════════════
 
-    // ── Top Products Adapter ──────────────────────────────────────────────────
     static class TopProductAdapter extends RecyclerView.Adapter<TopProductAdapter.VH> {
         private final List<Map.Entry<String, int[]>> list;
         TopProductAdapter(List<Map.Entry<String, int[]>> list) { this.list = list; }
@@ -359,13 +346,12 @@ public class AnalyticsFragment extends Fragment {
                 super(v);
                 tvRank = v.findViewById(R.id.tvRank);
                 tvName = v.findViewById(R.id.tvProductName);
-                tvQty  = v.findViewById(R.id.tvQtySold);
-                tvRev  = v.findViewById(R.id.tvProductRevenue);
+                tvQty = v.findViewById(R.id.tvQtySold);
+                tvRev = v.findViewById(R.id.tvProductRevenue);
             }
         }
     }
 
-    // ── Recent Orders Adapter ─────────────────────────────────────────────────
     static class RecentOrderAdapter extends RecyclerView.Adapter<RecentOrderAdapter.VH> {
         private final List<Order> list;
         RecentOrderAdapter(List<Order> list) { this.list = list; }

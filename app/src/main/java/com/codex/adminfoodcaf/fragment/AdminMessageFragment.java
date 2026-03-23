@@ -33,10 +33,9 @@ public class AdminMessageFragment extends Fragment {
 
     private FirebaseFirestore db;
 
-    private String customerId; // User ගේ ID එක
-    private String customerName; // User ගේ නම
+    private String customerId;
+    private String customerName;
 
-    // User ඇප් එකේදී Admin ට දුන්න ID එකමයි මෙතන තියෙන්නේ
     private final String ADMIN_ID = "UO6OFTZdtaRAiWUJLD5TiJIuONj2";
 
     public AdminMessageFragment() {}
@@ -57,7 +56,6 @@ public class AdminMessageFragment extends Fragment {
 
         db = FirebaseFirestore.getInstance();
 
-        // කලින් පිටුවෙන් (Inbox එකෙන්) එවන User ගේ විස්තර ගන්නවා
         if (getArguments() != null) {
             customerId = getArguments().getString("customerId");
             customerName = getArguments().getString("customerName");
@@ -80,7 +78,7 @@ public class AdminMessageFragment extends Fragment {
 
     private void setupRecyclerView() {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-        layoutManager.setStackFromEnd(true); // අලුත් මැසේජ් යටින් පෙන්වන්න
+        layoutManager.setStackFromEnd(true);
         rvMessages.setLayoutManager(layoutManager);
     }
 
@@ -108,7 +106,6 @@ public class AdminMessageFragment extends Fragment {
                         messageList.add(doc.toObject(Message.class));
                     }
 
-                    // 🔴 MessageAdapter එකට Admin ගේ ID එක පාස් කරනවා (එතකොට Admin යවපුවා දකුණු පැත්තෙන් පෙන්වයි)
                     MessageAdapter adapter = new MessageAdapter(messageList, ADMIN_ID);
                     rvMessages.setAdapter(adapter);
                     rvMessages.scrollToPosition(messageList.size() - 1);

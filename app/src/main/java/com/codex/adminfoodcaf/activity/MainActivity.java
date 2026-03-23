@@ -126,7 +126,6 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
             if (itemId == R.id.nav_home) {
-                // Clear back stack to remove SingleProductFragment or others
                 getSupportFragmentManager().popBackStack(null, androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragmentContainer, new com.codex.adminfoodcaf.fragment.HomeFragment())
@@ -145,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
                         .commit();
                 return true;
             }
-            // Future tabs (Orders) can be added here
+
             return false;
         });
 

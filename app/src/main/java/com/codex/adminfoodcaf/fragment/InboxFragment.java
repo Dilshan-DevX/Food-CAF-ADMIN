@@ -49,7 +49,7 @@ public class InboxFragment extends Fragment {
     }
 
     private void loadUsers() {
-        // Currently logged-in admin ගේ UID එක ගන්නවා
+
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         String currentAdminUid = firebaseUser != null ? firebaseUser.getUid() : "";
 
@@ -79,7 +79,6 @@ public class InboxFragment extends Fragment {
         adapter = new InboxAdapter(userList, new InboxAdapter.OnUserClickListener() {
             @Override
             public void onUserClick(User user) {
-                // 🔴 User ව ක්ලික් කළාම AdminMessageFragment (Chat) එකට යනවා
                 Bundle bundle = new Bundle();
                 bundle.putString("customerId", user.getUId()); // User ගේ ID එක
                 bundle.putString("customerName", user.getName()); // User ගේ නම

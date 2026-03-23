@@ -40,8 +40,8 @@ public class InboxAdapter extends RecyclerView.Adapter<InboxAdapter.InboxViewHol
         holder.tvUserName.setText(user.getName() != null ? user.getName() : "Unknown User");
         holder.tvUserEmail.setText(user.getEmail() != null ? user.getEmail() : "No Email");
 
-        // Profile picture load — fallback to account_circle_24px
-        holder.imgUserAvatar.clearColorFilter(); // gray tint clear
+
+        holder.imgUserAvatar.clearColorFilter();
         if (user.getProfilePicUrl() != null && !user.getProfilePicUrl().isEmpty()) {
             Glide.with(holder.itemView.getContext())
                     .load(user.getProfilePicUrl())

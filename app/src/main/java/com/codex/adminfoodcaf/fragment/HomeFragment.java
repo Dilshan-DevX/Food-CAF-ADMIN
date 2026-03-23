@@ -50,10 +50,8 @@ public class HomeFragment extends Fragment {
         loadProducts();
     }
 
-    // ✅ Firestore collections 3ken parallel load — orders, products, users
     private void loadStats() {
 
-        // ── 1. ORDERS collection ──────────────────────────────────────────────
         db.collection("orders").addSnapshotListener((orderSnap, e) -> {
             if (e != null || binding == null || !isAdded() || orderSnap == null)
                 return;
@@ -61,15 +59,14 @@ public class HomeFragment extends Fragment {
             int totalOrders = orderSnap.size();
             binding.orderCount.setText(String.valueOf(totalOrders));
 
-            int salesCount = 0; // status == true (Paid / Delivered)
-            int pendingCount = 0; // status == false (Pending / others)
-            double revenue = 0.0; // status true orders wala total
+            int salesCount = 0;
+            int pendingCount = 0;
+            double revenue = 0.0;
 
             List<Order> orderList = orderSnap.toObjects(Order.class);
 
             for (Order order : orderList) {
-                // ✅ "status" field eke "true" / "Paid" / "Delivered" — boolean-like string
-                // check
+
                 boolean isPaid = "true".equalsIgnoreCase(order.getStatus())
                         || "Paid".equalsIgnoreCase(order.getStatus())
                         || "Delivered".equalsIgnoreCase(order.getStatus());
@@ -77,7 +74,6 @@ public class HomeFragment extends Fragment {
                 if (isPaid) {
                     salesCount++;
 
-                    // ✅ totalRevenue — paid orders wala orderItems totalPrice ekathu karanawa
                     if (order.getOrderItems() != null) {
                         for (Order.OrderItem item : order.getOrderItems()) {
                             revenue += item.getTotalPrice();
@@ -93,14 +89,13 @@ public class HomeFragment extends Fragment {
             binding.totalRevenue.setText(String.format("LKR %.0f", revenue));
         });
 
-        // ── 2. PRODUCTS collection ────────────────────────────────────────────
+
         db.collection("products").addSnapshotListener((productSnap, e) -> {
             if (e != null || binding == null || !isAdded() || productSnap == null)
                 return;
             binding.productCount.setText(String.valueOf(productSnap.size()));
         });
 
-        // ── 3. USERS collection ───────────────────────────────────────────────
         db.collection("users").addSnapshotListener((userSnap, e) -> {
             if (e != null || binding == null || !isAdded() || userSnap == null)
                 return;
@@ -108,7 +103,7 @@ public class HomeFragment extends Fragment {
         });
     }
 
-    // ✅ rvAdminList — products load
+
     private void loadProducts() {
         binding.rvAdminList.setLayoutManager(new LinearLayoutManager(getContext()));
         db.collection("products").addSnapshotListener((queryDocumentSnapshots, e) -> {

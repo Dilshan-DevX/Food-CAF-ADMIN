@@ -24,8 +24,8 @@ import java.util.List;
 
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 
-    private List<User> fullList; // original full list — search filter walata
-    private List<User> showList; // currently showing list
+    private List<User> fullList;
+    private List<User> showList;
 
     public UserAdapter(List<User> userList) {
         this.fullList = new ArrayList<>(userList);
@@ -44,17 +44,16 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                 if (nameMatch || emailMatch)
                     showList.add(u);
             }
-            
-            // ✅ Sort the results so that exact matches (or prefix matches) appear at the very top
+
             showList.sort((u1, u2) -> {
                 boolean u1Starts = (u1.getName() != null && u1.getName().toLowerCase().startsWith(q))
                                 || (u1.getEmail() != null && u1.getEmail().toLowerCase().startsWith(q));
                 boolean u2Starts = (u2.getName() != null && u2.getName().toLowerCase().startsWith(q))
                                 || (u2.getEmail() != null && u2.getEmail().toLowerCase().startsWith(q));
                 
-                if (u1Starts && !u2Starts) return -1; // u1 comes first
-                if (!u1Starts && u2Starts) return 1;  // u2 comes first
-                return 0; // Both are equal
+                if (u1Starts && !u2Starts) return -1;
+                if (!u1Starts && u2Starts) return 1;
+                return 0;
             });
         }
         notifyDataSetChanged();
@@ -72,13 +71,11 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         User user = showList.get(position);
 
-        // ── Basic info ────────────────────────────────────────────────────────
         holder.tvName.setText(user.getName() != null ? user.getName() : "Unknown");
         holder.tvEmail.setText(user.getEmail() != null ? user.getEmail() : "-");
         holder.tvPhone.setText(user.getMobileNum() != null ? user.getMobileNum() : "-");
         holder.tvAddress.setText(user.getAddress() != null ? user.getAddress() : "-");
 
-        // ── Profile image ─────────────────────────────────────────────────────
         if (user.getProfilePicUrl() != null && !user.getProfilePicUrl().isEmpty()) {
             Glide.with(holder.imgProfile.getContext())
                     .load(user.getProfilePicUrl())
@@ -90,13 +87,10 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
             holder.imgProfile.setImageResource(android.R.drawable.ic_menu_myplaces);
         }
 
-        // ── Status chip ───────────────────────────────────────────────────────
         setStatusChip(holder.chipStatus, holder.btnToggleStatus, user.isStatus());
 
-        // ── View Profile button ───────────────────────────────────────────────
         holder.btnViewProfile.setOnClickListener(v -> showUserProfileDialog(v, user));
 
-        // ── Toggle Status button ──────────────────────────────────────────────
         holder.btnToggleStatus.setOnClickListener(v -> {
             boolean currentStatus = user.isStatus();
             boolean newStatus = !currentStatus;
@@ -125,7 +119,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         });
     }
 
-    // ✅ Status chip + button color logic
     private void setStatusChip(Chip chip, MaterialButton btn, boolean isActive) {
         if (isActive) {
             chip.setText("Active");
@@ -144,7 +137,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         }
     }
 
-    // ✅ View Profile — AlertDialog eke user details pennawa
     private void showUserProfileDialog(View anchor, User user) {
         View dialogView = LayoutInflater.from(anchor.getContext())
                 .inflate(R.layout.dialog_user_profile, null);
