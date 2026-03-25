@@ -1,16 +1,17 @@
 package com.codex.adminfoodcaf.fragment;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AutoCompleteTextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
-
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.codex.adminfoodcaf.R;
 import com.codex.adminfoodcaf.adapter.AdminProductAdapter;
@@ -19,12 +20,17 @@ import com.codex.adminfoodcaf.model.Order;
 import com.codex.adminfoodcaf.model.Product;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class HomeFragment extends Fragment {
 
     private FragmentHomeBinding binding;
     private FirebaseFirestore db;
+    private AdminProductAdapter productAdapter;
+    private AutoCompleteTextView globalSearchBar;
+    private TextWatcher globalSearchWatcher;
+    private String initialQuery = "";
 
     public HomeFragment() {
     }
@@ -33,6 +39,9 @@ public class HomeFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         db = FirebaseFirestore.getInstance();
+        if (getArguments() != null) {
+            initialQuery = getArguments().getString("searchQuery", "");
+        }
     }
 
     @Override
@@ -48,7 +57,10 @@ public class HomeFragment extends Fragment {
 
         loadStats();
         loadProducts();
+        setupGlobalSearchWatcher();
     }
+
+    // ─── Stats ────────────────────────────────────────────────────────────────
 
     private void loadStats() {
 
@@ -103,43 +115,115 @@ public class HomeFragment extends Fragment {
         });
     }
 
+    // ─── Products RecyclerView ─────────────────────────────────────────────────
 
     private void loadProducts() {
         binding.rvAdminList.setLayoutManager(new LinearLayoutManager(getContext()));
+
         db.collection("products").addSnapshotListener((queryDocumentSnapshots, e) -> {
             if (e != null || binding == null || !isAdded() || queryDocumentSnapshots == null)
                 return;
 
-            List<Product> productList = new java.util.ArrayList<>();
+            List<Product> productList = new ArrayList<>();
             for (com.google.firebase.firestore.QueryDocumentSnapshot doc : queryDocumentSnapshots) {
                 Product p = doc.toObject(Product.class);
                 p.setProductId(doc.getId());
                 productList.add(p);
             }
 
-            AdminProductAdapter adapter = new AdminProductAdapter(productList, product -> {
-                if (binding == null || !isAdded())
-                    return;
-
-                Bundle bundle = new Bundle();
-                bundle.putString("productId", product.getProductId());
-
-                SingleProductFragment singleProductFragment = new SingleProductFragment();
-                singleProductFragment.setArguments(bundle);
-
-                requireActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragmentContainer, singleProductFragment)
-                        .addToBackStack(null)
-                        .commit();
-            });
-
-            binding.rvAdminList.setAdapter(adapter);
+            if (productAdapter == null) {
+                productAdapter = new AdminProductAdapter(productList, this::navigateToProduct);
+                binding.rvAdminList.setAdapter(productAdapter);
+                
+                // If there's an initial query, apply it immediately.
+                if (!initialQuery.isEmpty()) {
+                    productAdapter.filter(initialQuery);
+                }
+            } else {
+                productAdapter.updateList(productList);
+                // Re-apply current search if any
+                if (globalSearchBar != null) {
+                    productAdapter.filter(globalSearchBar.getText().toString());
+                }
+            }
         });
     }
+
+    private void navigateToProduct(Product product) {
+        if (binding == null || !isAdded()) return;
+
+        Bundle bundle = new Bundle();
+        bundle.putString("productId", product.getProductId());
+
+        SingleProductFragment singleProductFragment = new SingleProductFragment();
+        singleProductFragment.setArguments(bundle);
+
+        requireActivity().getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragmentContainer, singleProductFragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
+    // ─── Search Integration ──────────────────────────────────────────────────
+
+    public void filterProducts(String query) {
+        if (productAdapter != null) {
+            productAdapter.filter(query);
+            // Sync the text bar too in case it was called from outside
+            if (globalSearchBar != null && !globalSearchBar.getText().toString().equals(query)) {
+                globalSearchBar.setText(query);
+                globalSearchBar.setSelection(globalSearchBar.getText().length());
+            }
+        } else {
+            initialQuery = query;
+        }
+    }
+
+    private void setupGlobalSearchWatcher() {
+        if (getActivity() != null) {
+            globalSearchBar = getActivity().findViewById(R.id.textInputSearch);
+            if (globalSearchBar != null) {
+                globalSearchWatcher = new TextWatcher() {
+                    @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+                    @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+                    @Override
+                    public void afterTextChanged(Editable s) {
+                        if (productAdapter != null) {
+                            productAdapter.filter(s.toString().trim());
+                        }
+                    }
+                };
+            }
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (globalSearchBar != null && globalSearchWatcher != null) {
+            globalSearchBar.addTextChangedListener(globalSearchWatcher);
+            // Sync with current text in case it changed while paused
+            if (productAdapter != null) {
+                productAdapter.filter(globalSearchBar.getText().toString().trim());
+            }
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (globalSearchBar != null && globalSearchWatcher != null) {
+            globalSearchBar.removeTextChangedListener(globalSearchWatcher);
+        }
+    }
+
+    // ─── Lifecycle ────────────────────────────────────────────────────────────
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+        productAdapter = null;
     }
 }

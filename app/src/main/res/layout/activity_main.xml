@@ -40,21 +40,28 @@
                         app:layout_constraintTop_toTopOf="parent"
                         tools:srcCompat="@tools:sample/avatars" />
 
-                    <EditText
+                    <AutoCompleteTextView
                         android:id="@+id/textInputSearch"
                         android:layout_width="0dp"
                         android:layout_height="48dp"
                         android:layout_marginStart="16dp"
                         android:layout_marginEnd="16dp"
                         android:background="@drawable/search_bg"
+                        android:completionThreshold="1"
                         android:drawableStart="@drawable/search_24px"
                         android:drawablePadding="12dp"
                         android:hint="@string/search_hint_text"
+                        android:imeOptions="actionSearch"
+                        android:maxLines="1"
                         android:paddingStart="16dp"
                         android:paddingEnd="16dp"
+                        android:singleLine="true"
                         android:textSize="14sp"
+                        android:textColor="#091413"
+                        android:textColorHint="#091413"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@+id/menu_Logo"
+                        app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toEndOf="@+id/nav_Logo"
                         app:layout_constraintTop_toTopOf="parent" />
 

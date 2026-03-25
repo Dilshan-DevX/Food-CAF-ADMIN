@@ -153,7 +153,72 @@ public class MainActivity extends AppCompatActivity {
                     .replace(R.id.fragmentContainer, new com.codex.adminfoodcaf.fragment.HomeFragment())
                     .commit();
         }
+        
+        setupGlobalSearch();
 
+    }
+
+    private void setupGlobalSearch() {
+        android.widget.AutoCompleteTextView searchInput = findViewById(R.id.textInputSearch);
+        if (searchInput == null) return;
+
+        FirebaseFirestore.getInstance().collection("products").get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    java.util.List<String> productNames = new java.util.ArrayList<>();
+                    for (com.google.firebase.firestore.QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                        String title = doc.getString("foodTitle");
+                        if (title != null) productNames.add(title);
+                    }
+                    android.widget.ArrayAdapter<String> adapter = new android.widget.ArrayAdapter<>(
+                            this, android.R.layout.simple_dropdown_item_1line, productNames);
+                    searchInput.setAdapter(adapter);
+                });
+
+        searchInput.setOnItemClickListener((parent, view, position, id) -> {
+            String query = (String) parent.getItemAtPosition(position);
+            searchInput.setText(query, false); // Set text explicitly without showing dropdown again
+            navigateToHomeWithSearch(query);
+            hideKeyboard(searchInput);
+        });
+
+        searchInput.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == android.view.inputmethod.EditorInfo.IME_ACTION_SEARCH) {
+                String query = searchInput.getText().toString().trim();
+                if (!query.isEmpty()) {
+                    navigateToHomeWithSearch(query);
+                }
+                hideKeyboard(searchInput);
+                return true;
+            }
+            return false;
+        });
+    }
+
+    private void navigateToHomeWithSearch(String query) {
+        if (bottomNavigationView.getSelectedItemId() != R.id.nav_home) {
+            getSupportFragmentManager().popBackStack(null, androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            com.codex.adminfoodcaf.fragment.HomeFragment homeFrag = new com.codex.adminfoodcaf.fragment.HomeFragment();
+            Bundle bundle = new Bundle();
+            bundle.putString("searchQuery", query);
+            homeFrag.setArguments(bundle);
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragmentContainer, homeFrag)
+                    .commit();
+
+            bottomNavigationView.getMenu().findItem(R.id.nav_home).setChecked(true);
+        } else {
+            androidx.fragment.app.Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragmentContainer);
+            if (currentFragment instanceof com.codex.adminfoodcaf.fragment.HomeFragment) {
+                ((com.codex.adminfoodcaf.fragment.HomeFragment) currentFragment).filterProducts(query);
+            }
+        }
+    }
+    
+    private void hideKeyboard(View view) {
+        android.view.inputmethod.InputMethodManager imm = 
+            (android.view.inputmethod.InputMethodManager) getSystemService(android.content.Context.INPUT_METHOD_SERVICE);
+        if (imm != null) imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        view.clearFocus();
     }
 
     private void loadUserProfileInfo() {

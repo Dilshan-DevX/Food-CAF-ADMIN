@@ -1,7 +1,6 @@
 package com.codex.adminfoodcaf.adapter;
 
 import android.graphics.Color;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,19 +12,58 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.codex.adminfoodcaf.R;
-import com.codex.adminfoodcaf.fragment.SingleProductFragment;
 import com.codex.adminfoodcaf.model.Product;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class AdminProductAdapter extends RecyclerView.Adapter<AdminProductAdapter.ViewHolder> {
 
     private List<Product> productList;
+    private List<Product> originalList;
     private OnProductClickListener listener;
 
     public AdminProductAdapter(List<Product> productList, OnProductClickListener listener) {
-        this.productList = productList;
+        this.productList = new ArrayList<>(productList);
+        this.originalList = new ArrayList<>(productList);
         this.listener = listener;
+    }
+
+    /** Update the entire dataset (called after fresh Firestore snapshot) */
+    public void updateList(List<Product> newList) {
+        this.originalList = new ArrayList<>(newList);
+        this.productList = new ArrayList<>(newList);
+        notifyDataSetChanged();
+    }
+
+    /** Filter by product name — pass null or empty to reset. Exact/Prefix matches appear top. */
+    public void filter(String query) {
+        productList.clear();
+        if (query == null || query.trim().isEmpty()) {
+            productList.addAll(originalList);
+        } else {
+            String lower = query.toLowerCase().trim();
+            List<Product> topMatches = new ArrayList<>();
+            List<Product> otherMatches = new ArrayList<>();
+            
+            for (Product p : originalList) {
+                if (p.getFoodTitle() != null) {
+                    String titleLower = p.getFoodTitle().toLowerCase();
+                    if (titleLower.equals(lower) || titleLower.startsWith(lower)) {
+                        topMatches.add(p);
+                    } else if (titleLower.contains(lower)) {
+                        otherMatches.add(p);
+                    }
+                }
+            }
+            productList.addAll(topMatches);
+            productList.addAll(otherMatches);
+        }
+        notifyDataSetChanged();
+    }
+
+    public List<Product> getOriginalList() {
+        return originalList;
     }
 
     @NonNull
@@ -63,11 +101,8 @@ public class AdminProductAdapter extends RecyclerView.Adapter<AdminProductAdapte
             holder.imgRestaurant.setImageResource(android.R.drawable.ic_menu_gallery);
         }
 
-
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) listener.onProductClick(product);
-
-
         });
     }
 

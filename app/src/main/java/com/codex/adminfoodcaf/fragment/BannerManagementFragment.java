@@ -147,11 +147,11 @@ public class BannerManagementFragment extends Fragment {
 
     private void saveBanner() {
         String title = etBannerTitle.getText() != null
-                ? etBannerTitle.getText().toString().trim() : "";
+                ? etBannerTitle.getText().toString().trim():"";
         String body  = etBannerBody.getText()  != null
-                ? etBannerBody.getText().toString().trim()  : "";
+                ? etBannerBody.getText().toString().trim():"";
         String date  = etBannerDate.getText()  != null
-                ? etBannerDate.getText().toString().trim()  : "";
+                ? etBannerDate.getText().toString().trim():"";
 
         if (title.isEmpty()) {
             etBannerTitle.setError("Title required");
