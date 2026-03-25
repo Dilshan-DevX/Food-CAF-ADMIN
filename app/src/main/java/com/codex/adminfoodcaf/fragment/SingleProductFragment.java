@@ -44,22 +44,20 @@ public class SingleProductFragment extends Fragment {
 
     private static final String TAG = "ProductDebug";
 
-    // ── Views ─────────────────────────────────────────────────────────────────
-    private ImageView            imgProduct, imgProduct2;
-    private EditText             etFoodTitle, etPrice, etRating,
-            etFoodTime, etFoodDetail, etIngredients;
+    private ImageView imgProduct, imgProduct2;
+    private EditText etFoodTitle, etPrice, etRating, etFoodTime, etFoodDetail, etIngredients;
     private AutoCompleteTextView dropdownCategory;
-    private SwitchMaterial       switchAvailability;
-    private TextView             tvAvailabilityLabel;
-    private View                 btnUpdate;
+    private SwitchMaterial switchAvailability;
+    private TextView tvAvailabilityLabel;
+    private View  btnUpdate;
 
-    // ── State ─────────────────────────────────────────────────────────────────
-    private String             productId;
-    private String             selectedCategoryId = "";
+
+    private String productId;
+    private String selectedCategoryId = "";
     private final List<String> categoryIds   = new ArrayList<>();
     private final List<String> categoryNames = new ArrayList<>();
     
-    // Image Upload State
+
     private Uri imageUri1 = null;
     private Uri imageUri2 = null;
     private int selectedImageIndex = 1; 
@@ -68,7 +66,7 @@ public class SingleProductFragment extends Fragment {
     private String realProductId = "";
 
     public SingleProductFragment() {
-        // Required empty public constructor
+
     }
 
     @Override
@@ -103,43 +101,38 @@ public class SingleProductFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         // 1. Bind Views
-        imgProduct          = view.findViewById(R.id.imgProduct);
-        imgProduct2         = view.findViewById(R.id.imgProduct2);
-        etFoodTitle         = view.findViewById(R.id.etFoodTitle);
-        etPrice             = view.findViewById(R.id.etPrice);
-        etRating            = view.findViewById(R.id.etRating);
-        etFoodTime          = view.findViewById(R.id.etFoodTime);
-        etFoodDetail        = view.findViewById(R.id.etFoodDetail);
-        etIngredients       = view.findViewById(R.id.etIngredients);
-        dropdownCategory    = view.findViewById(R.id.dropdownCategory);
-        switchAvailability  = view.findViewById(R.id.switchAvailability);
+        imgProduct = view.findViewById(R.id.imgProduct);
+        imgProduct2 = view.findViewById(R.id.imgProduct2);
+        etFoodTitle = view.findViewById(R.id.etFoodTitle);
+        etPrice = view.findViewById(R.id.etPrice);
+        etRating  = view.findViewById(R.id.etRating);
+        etFoodTime  = view.findViewById(R.id.etFoodTime);
+        etFoodDetail  = view.findViewById(R.id.etFoodDetail);
+        etIngredients = view.findViewById(R.id.etIngredients);
+        dropdownCategory = view.findViewById(R.id.dropdownCategory);
+        switchAvailability = view.findViewById(R.id.switchAvailability);
         tvAvailabilityLabel = view.findViewById(R.id.tvAvailabilityLabel);
-        btnUpdate           = view.findViewById(R.id.btnUpdate);
+        btnUpdate = view.findViewById(R.id.btnUpdate);
 
-        // 2. Get Product ID from Bundle
+
         if (getArguments() != null) {
             productId = getArguments().getString("productId");
         }
-        // ✅ DEBUG — productId correct atha check karanawa
+
         Log.d(TAG, "▶ productId received: " + productId);
 
-        // 3. Load Categories (then load product)
         loadCategories();
 
-        // 4. Setup Availability Switch listener
         switchAvailability.setOnCheckedChangeListener((buttonView, isChecked) -> {
             setAvailabilityLabel(isChecked);
         });
 
-        // 5. Setup Dropdown listener
         dropdownCategory.setOnItemClickListener((parent, view1, position, id) -> {
             selectedCategoryId = categoryIds.get(position);
         });
 
-        // 6. Setup Update Button listener
         btnUpdate.setOnClickListener(v -> updateProduct());
-        
-        // 7. Setup Image Click Listeners
+
         imgProduct.setOnClickListener(v -> openGallery(1));
         imgProduct2.setOnClickListener(v -> openGallery(2));
     }
@@ -171,7 +164,7 @@ public class SingleProductFragment extends Fragment {
                         dropdownCategory.setAdapter(adapter);
                     }
 
-                    // Categories load thaya pachi product load karo
+
                     Log.d(TAG, "▶ Calling loadProduct after categories. productId=" + productId);
                     if (productId != null) {
                         loadProduct(productId);
@@ -202,7 +195,7 @@ public class SingleProductFragment extends Fragment {
 
                     realProductId = (p.getProductId() != null && !p.getProductId().isEmpty()) ? p.getProductId() : productId;
 
-                    // Text Fields Data Set Karvu
+
                     etFoodTitle.setText(p.getFoodTitle() != null ? p.getFoodTitle() : "");
                     etPrice.setText(String.valueOf(p.getProductPrice()));
                     etRating.setText(p.getFoodRating() != null ? p.getFoodRating() : "");
@@ -210,17 +203,15 @@ public class SingleProductFragment extends Fragment {
                     etFoodDetail.setText(p.getFoodDetail() != null ? p.getFoodDetail() : "");
                     etIngredients.setText(p.getIngrideint() != null ? p.getIngrideint() : "");
 
-                    // Availability Switch Set Karvu
+
                     switchAvailability.setChecked(p.isAvailability());
                     setAvailabilityLabel(p.isAvailability());
 
-                    // Category Dropdown Set Karvu
                     String catId = p.getCategoryId();
                     if (catId != null && !catId.isEmpty()) {
                         String cleanCat = catId.trim();
                         int idx = -1;
 
-                        // Default search by ID (case-insensitive)
                         for (int i = 0; i < categoryIds.size(); i++) {
                             if (categoryIds.get(i).equalsIgnoreCase(cleanCat)) {
                                 idx = i;
@@ -228,7 +219,6 @@ public class SingleProductFragment extends Fragment {
                             }
                         }
 
-                        // Fallback: search by Name (in case DB stored Name instead of ID)
                         if (idx < 0) {
                             for (int i = 0; i < categoryNames.size(); i++) {
                                 if (categoryNames.get(i).equalsIgnoreCase(cleanCat)) {
@@ -240,10 +230,10 @@ public class SingleProductFragment extends Fragment {
 
                         if (idx >= 0) {
                             String cName = categoryNames.get(idx);
-                            selectedCategoryId = categoryIds.get(idx); // ensuring it's the valid ID!
+                            selectedCategoryId = categoryIds.get(idx);
                             dropdownCategory.setText(cName, false);
                         } else {
-                            // Show debug toast so we know what's in the DB
+
                             Toast.makeText(getContext(), "Debug: Category '" + cleanCat + "' not found", Toast.LENGTH_LONG).show();
                             dropdownCategory.setText("Select Category", false);
                         }
@@ -252,7 +242,6 @@ public class SingleProductFragment extends Fragment {
                         dropdownCategory.setText("Select Category", false);
                     }
 
-                    // Image Load Karvi
                     List<String> imgs = p.getProductImage();
                     if (imgs != null) {
                         currentProductImageUrls.clear();
@@ -288,11 +277,11 @@ public class SingleProductFragment extends Fragment {
             return;
         }
 
-        String title       = etFoodTitle.getText().toString().trim();
-        String priceStr    = etPrice.getText().toString().trim();
-        String rating      = etRating.getText().toString().trim();
-        String time        = etFoodTime.getText().toString().trim();
-        String detail      = etFoodDetail.getText().toString().trim();
+        String title = etFoodTitle.getText().toString().trim();
+        String priceStr = etPrice.getText().toString().trim();
+        String rating = etRating.getText().toString().trim();
+        String time = etFoodTime.getText().toString().trim();
+        String detail = etFoodDetail.getText().toString().trim();
         String ingredients = etIngredients.getText().toString().trim();
         boolean available  = switchAvailability.isChecked();
 
@@ -335,7 +324,7 @@ public class SingleProductFragment extends Fragment {
             uploadSingleImage(imageUri2, storageRef, url2 -> {
                 if (url2 != null && !url2.isEmpty()) {
                     if (currentProductImageUrls.size() < 2) {
-                        if (currentProductImageUrls.isEmpty()) currentProductImageUrls.add(""); // Ensure index 0 exists
+                        if (currentProductImageUrls.isEmpty()) currentProductImageUrls.add("");
                         currentProductImageUrls.add(url2);
                     } else {
                         currentProductImageUrls.set(1, url2);

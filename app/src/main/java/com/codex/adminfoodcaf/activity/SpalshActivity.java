@@ -25,16 +25,12 @@ public class SpalshActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
 
-        // Modern AndroidX way to handle fullscreen / hiding system bars without
-        // deprecation warnings
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         WindowInsetsControllerCompat windowInsetsController = WindowCompat.getInsetsController(getWindow(),
                 getWindow().getDecorView());
 
         if (windowInsetsController != null) {
-            // Hides both the status bar and navigation bar
             windowInsetsController.hide(WindowInsetsCompat.Type.systemBars());
-            // Allows users to swipe to temporarily see the system bars
             windowInsetsController.setSystemBarsBehavior(
                     WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
         }
@@ -49,7 +45,6 @@ public class SpalshActivity extends AppCompatActivity {
                 .override(250)
                 .into(imageView);
 
-        // I also shortened your Runnables to lambdas to make the code a bit cleaner
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             findViewById(R.id.progress_circular).setVisibility(View.VISIBLE);
         }, 500);
@@ -59,10 +54,8 @@ public class SpalshActivity extends AppCompatActivity {
             FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
             Intent intent;
             if (currentUser != null) {
-                // User is logged in
                 intent = new Intent(SpalshActivity.this, MainActivity.class);
             } else {
-                // No user logged in
                 intent = new Intent(SpalshActivity.this, SigninActivity.class);
             }
             startActivity(intent);

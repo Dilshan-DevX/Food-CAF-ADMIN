@@ -27,10 +27,10 @@ import java.util.List;
 
 public class PaymentManagementFragment extends Fragment {
 
-    private TextView             tvPendingCount, tvCompletedCount, tvPendingLabel, tvRefresh;
-    private RecyclerView         rvPendingPayments;
+    private TextView tvPendingCount, tvCompletedCount, tvPendingLabel, tvRefresh;
+    private RecyclerView rvPendingPayments;
     private PendingPaymentAdapter adapter;
-    private ListenerRegistration  ordersListener; // real-time listener reference
+    private ListenerRegistration  ordersListener;
 
     public PaymentManagementFragment() {}
 
@@ -52,7 +52,6 @@ public class PaymentManagementFragment extends Fragment {
 
         rvPendingPayments.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        // Refresh button — manual refresh hama welawatama weda karanawa
         tvRefresh.setOnClickListener(v -> {
             if (ordersListener != null) ordersListener.remove();
             listenPayments();
@@ -61,7 +60,6 @@ public class PaymentManagementFragment extends Fragment {
         listenPayments();
     }
 
-    // Real-time listener — payment mark karama automatic refresh
     private void listenPayments() {
         ordersListener = FirebaseFirestore.getInstance()
                 .collection("orders")
@@ -72,7 +70,7 @@ public class PaymentManagementFragment extends Fragment {
                     for (com.google.firebase.firestore.DocumentSnapshot doc : snap.getDocuments()) {
                         Order order = doc.toObject(Order.class);
                         if (order != null) {
-                            order.setOrderId(doc.getId()); // Real Firestore doc ID
+                            order.setOrderId(doc.getId());
                             allOrders.add(order);
                         }
                     }
@@ -101,10 +99,10 @@ public class PaymentManagementFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if (ordersListener != null) ordersListener.remove(); // memory leak prevent
+        if (ordersListener != null) ordersListener.remove();
     }
 
-    // Confirm dialog → Firestore update status to "Paid"
+
     private void confirmMarkPaid(Order order, int position) {
         new AlertDialog.Builder(requireContext())
                 .setTitle("Mark as Paid")
@@ -132,9 +130,7 @@ public class PaymentManagementFragment extends Fragment {
                 .show();
     }
 
-    // ══════════════════════════════════════════════════════════════════════════
-    // Inner Adapter
-    // ══════════════════════════════════════════════════════════════════════════
+
     static class PendingPaymentAdapter
             extends RecyclerView.Adapter<PendingPaymentAdapter.VH> {
 
@@ -160,14 +156,13 @@ public class PaymentManagementFragment extends Fragment {
         public void onBindViewHolder(@NonNull VH h, int pos) {
             Order o = list.get(pos);
 
-            // ── Order ID ──────────────────────────────────────────────────────
+
             h.tvOrderId.setText("#" + (o.getOrderId() != null ? o.getOrderId() : "-"));
 
-            // ── Status chip ───────────────────────────────────────────────────
+
             String status = o.getStatus() != null ? o.getStatus() : "Pending";
             h.chipStatus.setText(status);
 
-            // ── Customer info — DeliveryAddress elen gannawa ─────────────────
             if (o.getDeliveryAddress() != null) {
                 String name    = o.getDeliveryAddress().getName();
                 String contact = o.getDeliveryAddress().getContactNum();
@@ -178,10 +173,9 @@ public class PaymentManagementFragment extends Fragment {
                 h.tvUserContact.setText("-");
             }
 
-            // ── Date ──────────────────────────────────────────────────────────
+
             h.tvDate.setText(o.getOrderDate() != null ? o.getOrderDate() : "-");
 
-            // ── Total — orderItems totalPrice sum + 100 delivery ──────────────
             double total = 0;
             if (o.getOrderItems() != null)
                 for (Order.OrderItem item : o.getOrderItems())
@@ -189,7 +183,6 @@ public class PaymentManagementFragment extends Fragment {
             total += 100; // delivery fee
             h.tvTotal.setText(String.format("LKR %,.2f", total));
 
-            // ── Mark as Paid button ───────────────────────────────────────────
             h.btnMarkPaid.setOnClickListener(v -> {
                 if (listener != null) listener.onMarkPaid(o, h.getAdapterPosition());
             });
@@ -204,13 +197,13 @@ public class PaymentManagementFragment extends Fragment {
 
             VH(@NonNull View v) {
                 super(v);
-                tvOrderId      = v.findViewById(R.id.tvPayOrderId);
-                tvUserName     = v.findViewById(R.id.tvPayUserName);
+                tvOrderId = v.findViewById(R.id.tvPayOrderId);
+                tvUserName = v.findViewById(R.id.tvPayUserName);
                 tvUserContact  = v.findViewById(R.id.tvPayUserContact);
-                tvTotal        = v.findViewById(R.id.tvPayTotal);
-                tvDate         = v.findViewById(R.id.tvPayDate);
-                chipStatus     = v.findViewById(R.id.chipPayStatus);
-                btnMarkPaid    = v.findViewById(R.id.btnMarkPaid);
+                tvTotal = v.findViewById(R.id.tvPayTotal);
+                tvDate = v.findViewById(R.id.tvPayDate);
+                chipStatus = v.findViewById(R.id.chipPayStatus);
+                btnMarkPaid= v.findViewById(R.id.btnMarkPaid);
             }
         }
     }

@@ -36,15 +36,15 @@ import java.util.UUID;
 
 public class BannerManagementFragment extends Fragment {
 
-    private ImageView         imgBannerPreview, imgSelectedPreview;
-    private TextView          tvCurrentTitle, tvCurrentDate;
-    private TextView          tvImageStatus, tvUploadPercent;
+    private ImageView imgBannerPreview, imgSelectedPreview;
+    private TextView tvCurrentTitle, tvCurrentDate;
+    private TextView tvImageStatus, tvUploadPercent;
     private TextInputEditText etBannerTitle, etBannerBody, etBannerDate;
-    private LinearLayout      uploadProgressLayout;
-    private ProgressBar       uploadProgress;
-    private MaterialButton    btnPickImage, btnSaveBanner;
+    private LinearLayout uploadProgressLayout;
+    private ProgressBar uploadProgress;
+    private MaterialButton btnPickImage, btnSaveBanner;
 
-    private Uri    selectedImageUri  = null;
+    private Uri selectedImageUri  = null;
     private String currentBannerId  = null;
     private String currentImageUrl  = null;
 
@@ -81,17 +81,17 @@ public class BannerManagementFragment extends Fragment {
 
         imgBannerPreview   = view.findViewById(R.id.imgBannerPreview);
         imgSelectedPreview = view.findViewById(R.id.imgSelectedPreview);
-        tvCurrentTitle     = view.findViewById(R.id.tvCurrentTitle);
-        tvCurrentDate      = view.findViewById(R.id.tvCurrentDate);
-        tvImageStatus      = view.findViewById(R.id.tvImageStatus);
-        tvUploadPercent    = view.findViewById(R.id.tvUploadPercent);
-        etBannerTitle      = view.findViewById(R.id.etBannerTitle);
-        etBannerBody       = view.findViewById(R.id.etBannerBody);
-        etBannerDate       = view.findViewById(R.id.etBannerDate);
+        tvCurrentTitle = view.findViewById(R.id.tvCurrentTitle);
+        tvCurrentDate = view.findViewById(R.id.tvCurrentDate);
+        tvImageStatus = view.findViewById(R.id.tvImageStatus);
+        tvUploadPercent = view.findViewById(R.id.tvUploadPercent);
+        etBannerTitle = view.findViewById(R.id.etBannerTitle);
+        etBannerBody = view.findViewById(R.id.etBannerBody);
+        etBannerDate = view.findViewById(R.id.etBannerDate);
         uploadProgressLayout = view.findViewById(R.id.uploadProgressLayout);
-        uploadProgress     = view.findViewById(R.id.uploadProgress);
-        btnPickImage       = view.findViewById(R.id.btnPickImage);
-        btnSaveBanner      = view.findViewById(R.id.btnSaveBanner);
+        uploadProgress = view.findViewById(R.id.uploadProgress);
+        btnPickImage = view.findViewById(R.id.btnPickImage);
+        btnSaveBanner = view.findViewById(R.id.btnSaveBanner);
 
         loadCurrentBanner();
 
@@ -147,11 +147,11 @@ public class BannerManagementFragment extends Fragment {
 
     private void saveBanner() {
         String title = etBannerTitle.getText() != null
-                ? etBannerTitle.getText().toString().trim() : "";
+                ? etBannerTitle.getText().toString().trim():"";
         String body  = etBannerBody.getText()  != null
-                ? etBannerBody.getText().toString().trim()  : "";
+                ? etBannerBody.getText().toString().trim():"";
         String date  = etBannerDate.getText()  != null
-                ? etBannerDate.getText().toString().trim()  : "";
+                ? etBannerDate.getText().toString().trim():"";
 
         if (title.isEmpty()) {
             etBannerTitle.setError("Title required");
@@ -161,10 +161,10 @@ public class BannerManagementFragment extends Fragment {
         setBusy(true);
 
         if (selectedImageUri != null) {
-            // ✅ New image selected — upload to Storage first
+
             uploadImageThenSave(title, body, date);
         } else {
-            // ✅ No new image — save with existing URL
+
             saveToFirestore(title, body, date, currentImageUrl);
         }
     }

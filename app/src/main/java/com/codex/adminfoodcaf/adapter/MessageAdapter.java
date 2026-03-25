@@ -18,11 +18,11 @@ import java.util.Locale;
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageViewHolder> {
 
-    private static final int MSG_TYPE_LEFT = 0;  // User ගෙන් ආපු මැසේජ් (වම් පැත්තේ)
-    private static final int MSG_TYPE_RIGHT = 1; // Admin යවන මැසේජ් (දකුණු පැත්තේ)
+    private static final int MSG_TYPE_LEFT = 0;
+    private static final int MSG_TYPE_RIGHT = 1;
 
     private List<Message> messageList;
-    private String adminId; // මෙතනට එන්නේ "admin_user_id" කියන එකයි
+    private String adminId;
 
     public MessageAdapter(List<Message> messageList, String adminId) {
         this.messageList = messageList;
@@ -59,11 +59,9 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
     @Override
     public int getItemViewType(int position) {
-        // මැසේජ් එක යවපු කෙනා Admin නම් (Sender ID == adminId), ඒක දකුණු පැත්තෙන් පෙන්වනවා
         if (messageList.get(position).getSenderId().equals(adminId)) {
             return MSG_TYPE_RIGHT;
         } else {
-            // නැත්නම් ඒක User එවපු එකක්, ඒ නිසා වම් පැත්තෙන් පෙන්වනවා
             return MSG_TYPE_LEFT;
         }
     }

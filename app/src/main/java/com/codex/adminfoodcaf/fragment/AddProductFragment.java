@@ -85,7 +85,6 @@ public class AddProductFragment extends Fragment {
         db = FirebaseFirestore.getInstance();
         storage = FirebaseStorage.getInstance();
 
-        // Generate Product ID starting with P
         String generatedProductId = "P" + System.currentTimeMillis();
         binding.ProductId.setText(generatedProductId);
         
@@ -177,7 +176,6 @@ public class AddProductFragment extends Fragment {
                         }
                         binding.btnUpdate.setEnabled(true);
                         binding.btnUpdate.setText("ADD PRODUCT");
-                        // Clear fields and generate new ID for another product
                         clearFields();
                     })
                     .addOnFailureListener(e -> {

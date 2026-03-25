@@ -57,7 +57,6 @@ public class SigninActivity extends AppCompatActivity {
                 return;
             }
 
-            // ── Admin-only check: Firebase sign in karanawa, passe email verify ──
             firebaseAuth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
