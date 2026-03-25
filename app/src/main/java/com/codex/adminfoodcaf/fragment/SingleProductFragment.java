@@ -80,10 +80,14 @@ public class SingleProductFragment extends Fragment {
                         if (selectedUri != null) {
                             if (selectedImageIndex == 1) {
                                 imageUri1 = selectedUri;
-                                imgProduct.setImageURI(imageUri1);
+                                imgProduct.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                                imgProduct.setPadding(0, 0, 0, 0);
+                                Glide.with(requireContext()).load(imageUri1).into(imgProduct);
                             } else if (selectedImageIndex == 2) {
                                 imageUri2 = selectedUri;
-                                imgProduct2.setImageURI(imageUri2);
+                                imgProduct2.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                                imgProduct2.setPadding(0, 0, 0, 0);
+                                Glide.with(requireContext()).load(imageUri2).into(imgProduct2);
                             }
                         }
                     }
@@ -249,16 +253,20 @@ public class SingleProductFragment extends Fragment {
                     }
                     
                     if (imgs != null && !imgs.isEmpty()) {
+                        imgProduct.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                        imgProduct.setPadding(0, 0, 0, 0);
                         Glide.with(requireContext())
                                 .load(imgs.get(0))
-                                .placeholder(android.R.drawable.ic_menu_gallery)
+                                .placeholder(R.drawable.addproduct)
                                 .centerCrop()
                                 .into(imgProduct);
 
                         if (imgs.size() > 1) {
+                            imgProduct2.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                            imgProduct2.setPadding(0, 0, 0, 0);
                             Glide.with(requireContext())
                                     .load(imgs.get(1))
-                                    .placeholder(android.R.drawable.ic_menu_gallery)
+                                    .placeholder(R.drawable.addproduct)
                                     .centerCrop()
                                     .into(imgProduct2);
                         }
