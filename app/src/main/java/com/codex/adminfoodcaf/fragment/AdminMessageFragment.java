@@ -37,12 +37,25 @@ public class AdminMessageFragment extends Fragment {
     private String customerName;
 
     private final String ADMIN_ID = "UO6OFTZdtaRAiWUJLD5TiJIuONj2";
+    public static boolean isChatOpen = false;
 
     public AdminMessageFragment() {}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_admin_message, container, false);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        isChatOpen = true;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        isChatOpen = false;
     }
 
     @Override

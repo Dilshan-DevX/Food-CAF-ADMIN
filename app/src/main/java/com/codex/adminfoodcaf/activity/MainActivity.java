@@ -23,6 +23,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.ListenerRegistration;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -30,6 +31,9 @@ public class MainActivity extends AppCompatActivity {
     private MaterialToolbar toolbar;
     private NavigationView navigationView;
     private BottomNavigationView bottomNavigationView;
+
+    private long appStartTime = System.currentTimeMillis();
+    private java.util.List<ListenerRegistration> messageListeners = new java.util.ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,17 +92,20 @@ public class MainActivity extends AppCompatActivity {
                         finish();
                         return true;
                     } else if (id == R.id.nav_add) {
+                        uncheckBottomNav(bottomNavigationView);
                         getSupportFragmentManager().popBackStack(null, androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE);
                         getSupportFragmentManager().beginTransaction()
                                 .replace(R.id.fragmentContainer, new com.codex.adminfoodcaf.fragment.BannerManagementFragment())
                                 .addToBackStack(null)
                                 .commit();
                     } else if (id == R.id.drawer_home) {
+                        bottomNavigationView.getMenu().findItem(R.id.nav_home).setChecked(true);
                         getSupportFragmentManager().popBackStack(null, androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE);
                         getSupportFragmentManager().beginTransaction()
                                 .replace(R.id.fragmentContainer, new com.codex.adminfoodcaf.fragment.HomeFragment())
                                 .commit();
                     } else if (id == R.id.Messages) {
+                        uncheckBottomNav(bottomNavigationView);
                         getSupportFragmentManager().popBackStack(null, androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE);
                         getSupportFragmentManager().beginTransaction()
                                 .replace(R.id.fragmentContainer, new com.codex.adminfoodcaf.fragment.InboxFragment())
@@ -123,21 +130,30 @@ public class MainActivity extends AppCompatActivity {
 
         loadUserProfileInfo();
 
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            if (androidx.core.content.ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+                androidx.core.app.ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.POST_NOTIFICATIONS}, 101);
+            }
+        }
+
         bottomNavigationView.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
             if (itemId == R.id.nav_home) {
+                navigationView.setCheckedItem(R.id.drawer_home);
                 getSupportFragmentManager().popBackStack(null, androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragmentContainer, new com.codex.adminfoodcaf.fragment.HomeFragment())
                         .commit();
                 return true;
             } else if (itemId == R.id.nav_users) {
+                uncheckSideNav(navigationView);
                 getSupportFragmentManager().popBackStack(null, androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragmentContainer, new com.codex.adminfoodcaf.fragment.UserManagementFragment())
                         .commit();
                 return true;
             } else if (itemId == R.id.nav_profile) {
+                uncheckSideNav(navigationView);
                 getSupportFragmentManager().popBackStack(null, androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragmentContainer, new com.codex.adminfoodcaf.fragment.AnalyticsFragment())
@@ -148,10 +164,18 @@ public class MainActivity extends AppCompatActivity {
             return false;
         });
 
+        listenForNewMessages();
+
         if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragmentContainer, new com.codex.adminfoodcaf.fragment.HomeFragment())
-                    .commit();
+            if (getIntent() != null && getIntent().getBooleanExtra("open_messages", false)) {
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragmentContainer, new com.codex.adminfoodcaf.fragment.InboxFragment())
+                        .commit();
+            } else {
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragmentContainer, new com.codex.adminfoodcaf.fragment.HomeFragment())
+                        .commit();
+            }
         }
         
         setupGlobalSearch();
@@ -206,6 +230,7 @@ public class MainActivity extends AppCompatActivity {
                     .commit();
 
             bottomNavigationView.getMenu().findItem(R.id.nav_home).setChecked(true);
+            navigationView.setCheckedItem(R.id.drawer_home);
         } else {
             androidx.fragment.app.Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragmentContainer);
             if (currentFragment instanceof com.codex.adminfoodcaf.fragment.HomeFragment) {
@@ -214,6 +239,22 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     
+    private void uncheckBottomNav(BottomNavigationView bottomNav) {
+        android.view.Menu menu = bottomNav.getMenu();
+        menu.setGroupCheckable(0, true, false);
+        for (int i = 0; i < menu.size(); i++) {
+            menu.getItem(i).setChecked(false);
+        }
+        menu.setGroupCheckable(0, true, true);
+    }
+
+    private void uncheckSideNav(NavigationView sideNav) {
+        android.view.Menu menu = sideNav.getMenu();
+        for (int i = 0; i < menu.size(); i++) {
+            menu.getItem(i).setChecked(false);
+        }
+    }
+
     private void hideKeyboard(View view) {
         android.view.inputmethod.InputMethodManager imm = 
             (android.view.inputmethod.InputMethodManager) getSystemService(android.content.Context.INPUT_METHOD_SERVICE);
@@ -250,6 +291,95 @@ public class MainActivity extends AppCompatActivity {
                     .addOnFailureListener(e -> Toast
                             .makeText(MainActivity.this, "Failed to load profile", Toast.LENGTH_SHORT).show());
         }
+    }
+
+    private void listenForNewMessages() {
+        if (FirebaseAuth.getInstance().getCurrentUser() == null) return;
+
+        removeMessageListeners();
+
+        FirebaseFirestore.getInstance().collection("users").get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    String currentUserUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+                    for (com.google.firebase.firestore.QueryDocumentSnapshot userDoc : queryDocumentSnapshots) {
+                        String customerId = userDoc.getId();
+
+                        // Skip listening to admin's own chats folder if it exists
+                        if (customerId.equals(currentUserUid)) continue;
+
+                        ListenerRegistration listener = FirebaseFirestore.getInstance()
+                                .collection("chats").document(customerId).collection("messages")
+                                .orderBy("timestamp", com.google.firebase.firestore.Query.Direction.ASCENDING)
+                                .addSnapshotListener((value, error) -> {
+                                    if (error != null || value == null) return;
+
+                                    for (com.google.firebase.firestore.DocumentChange dc : value.getDocumentChanges()) {
+                                        if (dc.getType() == com.google.firebase.firestore.DocumentChange.Type.ADDED) {
+                                            com.codex.adminfoodcaf.model.Message msg = dc.getDocument().toObject(com.codex.adminfoodcaf.model.Message.class);
+
+                                            if (msg.getSenderId() != null && !msg.getSenderId().equals(currentUserUid) &&
+                                                    msg.getTimestamp() > appStartTime &&
+                                                    !com.codex.adminfoodcaf.fragment.AdminMessageFragment.isChatOpen) {
+
+                                                showNotification("New Message from " + (userDoc.getString("name") != null ? userDoc.getString("name") : "Customer"), msg.getMessageText(), (int) msg.getTimestamp());
+                                            }
+                                        }
+                                    }
+                                });
+                        messageListeners.add(listener);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    android.util.Log.e("ChatNotification", "Failed to load users for listeners.", e);
+                });
+    }
+
+    private void removeMessageListeners() {
+        for (ListenerRegistration listener : messageListeners) {
+            listener.remove();
+        }
+        messageListeners.clear();
+    }
+
+    private void showNotification(String title, String body, int notificationId) {
+        android.app.NotificationManager notificationManager = (android.app.NotificationManager) getSystemService(android.content.Context.NOTIFICATION_SERVICE);
+        String channelId = "admin_chat_notifications";
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            android.app.NotificationChannel channel = new android.app.NotificationChannel(
+                    channelId,
+                    "Customer Chat Messages",
+                    android.app.NotificationManager.IMPORTANCE_HIGH);
+            notificationManager.createNotificationChannel(channel);
+        }
+
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra("open_messages", true);
+        
+        int flags = android.app.PendingIntent.FLAG_UPDATE_CURRENT;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            flags |= android.app.PendingIntent.FLAG_IMMUTABLE;
+        }
+        android.app.PendingIntent pendingIntent = android.app.PendingIntent.getActivity(this, 0, intent, flags);
+
+        androidx.core.app.NotificationCompat.Builder builder = new androidx.core.app.NotificationCompat.Builder(this, channelId)
+                .setSmallIcon(R.drawable.img)
+                .setContentTitle(title)
+                .setContentText(body)
+                .setAutoCancel(true)
+                .setPriority(androidx.core.app.NotificationCompat.PRIORITY_HIGH)
+                .setDefaults(androidx.core.app.NotificationCompat.DEFAULT_ALL)
+                .setContentIntent(pendingIntent);
+
+        notificationManager.notify(notificationId, builder.build());
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        removeMessageListeners();
     }
 
     @Override
