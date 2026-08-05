@@ -1,5 +1,3 @@
-<![CDATA[<div align="center">
-
 # 🍔 Food CaF — Admin Panel
 
 **A powerful Android admin dashboard for managing a food ordering platform**
@@ -17,8 +15,6 @@
 ---
 
 [Features](#-features) · [Architecture](#-architecture) · [Tech Stack](#-tech-stack) · [Screenshots](#-screenshots) · [Setup](#-getting-started) · [Firebase](#-firebase-structure) · [Contributing](#-contributing)
-
-</div>
 
 ---
 
@@ -40,6 +36,7 @@ The app connects to a shared **Firebase** backend (Firestore + Storage + Auth), 
 ## ✨ Features
 
 ### 🏠 Dashboard (Home)
+
 | Feature | Description |
 |---------|-------------|
 | **Live Statistics Cards** | Real-time counters for Total Orders, Completed Sales, Pending Payments, Total Revenue (LKR), Product Count, and User Count — powered by Firestore snapshot listeners |
@@ -48,6 +45,7 @@ The app connects to a shared **Firebase** backend (Firestore + Storage + Auth), 
 | **Product Detail & Edit** | Tap any product to view/edit all details — title, price, rating, category, description, ingredients, availability toggle, and replace product images |
 
 ### 📦 Product Management
+
 | Feature | Description |
 |---------|-------------|
 | **Add New Product** | Full form with auto-generated Product ID, title, price, rating, preparation time, description, category dropdown, availability switch, and dual image upload |
@@ -57,6 +55,7 @@ The app connects to a shared **Firebase** backend (Firestore + Storage + Auth), 
 | **Availability Toggle** | Switch products between "Available" and "Not Available" with color-coded status indicators |
 
 ### 💳 Payment Management
+
 | Feature | Description |
 |---------|-------------|
 | **Pending Payments List** | Real-time list of unpaid orders with customer name, contact, order date, and total amount (including LKR 100 delivery fee) |
@@ -65,6 +64,7 @@ The app connects to a shared **Firebase** backend (Firestore + Storage + Auth), 
 | **Auto-Refresh** | Firestore snapshot listener ensures the list updates instantly when payment status changes |
 
 ### 📊 Analytics & Reporting
+
 | Feature | Description |
 |---------|-------------|
 | **Revenue Overview** | Total revenue calculated from all completed/paid orders |
@@ -75,6 +75,7 @@ The app connects to a shared **Firebase** backend (Firestore + Storage + Auth), 
 | **Quick Action Cards** | Direct navigation to "Manage Payments" and "Add Product" from the analytics screen |
 
 ### 👥 User Management
+
 | Feature | Description |
 |---------|-------------|
 | **User Directory** | Real-time list of all registered users with profile picture, name, email, phone, and address |
@@ -84,6 +85,7 @@ The app connects to a shared **Firebase** backend (Firestore + Storage + Auth), 
 | **Status Chips** | Color-coded Active (green) / Suspended (red) status indicators |
 
 ### 💬 Real-Time Messaging
+
 | Feature | Description |
 |---------|-------------|
 | **Chat Inbox** | List of all customers available for chat (admin's own account is excluded) |
@@ -94,6 +96,7 @@ The app connects to a shared **Firebase** backend (Firestore + Storage + Auth), 
 | **Smart Notification Logic** | Only notifies for messages received after app start time and when chat is not open |
 
 ### 🎯 Banner Management
+
 | Feature | Description |
 |---------|-------------|
 | **Current Banner Preview** | Displays the active banner with title and date |
@@ -103,6 +106,7 @@ The app connects to a shared **Firebase** backend (Firestore + Storage + Auth), 
 | **Live Preview** | Selected image preview before saving |
 
 ### 🔐 Authentication & Security
+
 | Feature | Description |
 |---------|-------------|
 | **Admin-Only Access** | Sign-in restricted to the designated admin email (`admin@gmail.com`) |
@@ -112,6 +116,7 @@ The app connects to a shared **Firebase** backend (Firestore + Storage + Auth), 
 | **Form Validation** | Email format validation and empty field checks on sign-in |
 
 ### 🎨 UI/UX
+
 | Feature | Description |
 |---------|-------------|
 | **Splash Screen** | Full-screen immersive splash with app logo and animated circular progress indicator |
@@ -241,6 +246,7 @@ com.codex.adminfoodcaf/
 ## 🛠 Tech Stack
 
 ### Core Platform
+
 | Technology | Version | Purpose |
 |------------|---------|---------|
 | **Android SDK** | Compile SDK 36, Min SDK 24 | Native Android app development |
@@ -248,6 +254,7 @@ com.codex.adminfoodcaf/
 | **Gradle** | AGP 8.12.3 | Build system with version catalog |
 
 ### Firebase Services
+
 | Service | Version | Purpose |
 |---------|---------|---------|
 | **Firebase BOM** | 34.10.0 | Dependency version management |
@@ -257,6 +264,7 @@ com.codex.adminfoodcaf/
 | **Firebase Analytics** | (BOM managed) | App usage analytics |
 
 ### AndroidX & Material
+
 | Library | Version | Purpose |
 |---------|---------|---------|
 | **AppCompat** | 1.7.1 | Backward-compatible Android features |
@@ -266,12 +274,14 @@ com.codex.adminfoodcaf/
 | **LocalBroadcastManager** | 1.1.0 | Local broadcast communication |
 
 ### Third-Party Libraries
+
 | Library | Version | Purpose |
 |---------|---------|---------|
 | **Glide** | 5.0.5 | Image loading, caching & transformations |
 | **Lombok** | 1.18.42 | Reduce boilerplate (getters, setters, builders) |
 
 ### Testing
+
 | Library | Version | Purpose |
 |---------|---------|---------|
 | **JUnit** | 4.13.2 | Unit testing |
@@ -461,11 +471,6 @@ This project is proprietary software developed by **Code X Pvt Ltd**.
 
 ---
 
-<div align="center">
-
 **Made with ❤️ by [Code X Pvt Ltd](https://github.com/Dilshan-DevX)**
 
 *Powering the Food CaF ecosystem*
-
-</div>
-]]>
